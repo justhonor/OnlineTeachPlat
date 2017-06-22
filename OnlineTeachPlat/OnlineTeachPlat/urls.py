@@ -18,6 +18,6 @@ from django.contrib import admin
 from oltp_admin import urls
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
-    url(r'^oltp/', include('oltp_admin.urls'))
+    url(r'^admin/', admin.site.urls),
+    url(r'^oltp/', include('oltp_admin.urls',namespace='oltp_admin'))
 ]

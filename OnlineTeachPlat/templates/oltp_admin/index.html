@@ -1,1 +1,5 @@
 {% extends "base.html" %}
+					{% block content %}
+						<h1>欢迎 {{request.user}} 访问我们站点!   <a href="{% url 'oltp_admin:logout' %}">注销</a></h1>
+					{% endblock content %}
+
