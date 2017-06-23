@@ -10,15 +10,20 @@ from oltp_admin.form import RegisterForm
 
 import pdb; 
 # Create your views here.
-
+# superuser root:root_11111 admin:admin_11111
 
 def index(request):
     '''主视图'''
     # 登录则显示index页面
     # 未登录则重定向url = /oltp/login
     # pdb.set_trace()
-    if request.user.is_authenticated() :
-    	return render(request,"oltp_admin/index.html")
+    if request.user.is_authenticated():
+    	if request.user.username == 'admin':
+    	    # 管理用户
+    		return render(request,"oltp_admin/admin_index.html") 
+    	else:
+    		# 普通用户
+    		return render(request,"oltp_admin/index.html")	
     else:
     	return HttpResponseRedirect("/oltp/login")
 
@@ -37,7 +42,9 @@ def register(request):
         # 将表单提交的数据交给RegisterForm 进行验证
         form = RegisterForm(request.POST.copy())
         if form.is_valid():
+        	# 验证通过，创建用户
             form.save()
+            # 登录
             if _login(request, form.cleaned_data['username'], form.cleaned_data['password'], template_var):
                 return render(request,"oltp_admin/index.html")
 
@@ -63,11 +70,10 @@ def login(request):
 
     return render(request,"oltp_admin/login.html",template_var)
 
-
-
 def _login(request, username, password, dict_var):
     '''登陆核心方法'''
     ret = False
+    # 验证用户
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:

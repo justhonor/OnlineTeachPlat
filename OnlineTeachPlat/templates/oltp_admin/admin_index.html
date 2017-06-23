@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{%block title%}管理站点{%endblock%}
+
+{% block content %}
+	<h1>欢迎 {{request.user}} 来到管理站点 </h1>
+{% endblock content %}
+
+{% block extend %}
+	<div class="parent">
+		<div class="left">
+			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:register' %}"'>用户管理</button>
+			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:register' %}"'>课程审核</button>
+		</div>
+		<div class="right">
+				<h3>您有新增事件需要处理</h3>
+		</div>
+	</div>
+{% endblock extend %}

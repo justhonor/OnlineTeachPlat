@@ -1,0 +1,14 @@
+.parent{
+    margin-top: 50px;
+}
+
+.left{
+    float: left;
+    width: 100px;
+    margin-top: 30px;
+}
+
+.right{
+    margin-left: 120px;
+}
+
