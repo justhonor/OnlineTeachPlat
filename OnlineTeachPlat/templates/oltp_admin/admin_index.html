@@ -9,10 +9,49 @@
 	<div class="parent">
 		<div class="left">
 			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:register' %}"'>用户管理</button>
-			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:register' %}"'>课程审核</button>
+
+			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary">课程审核</button>
 		</div>
 		<div class="right">
-				<h3>您有新增事件需要处理</h3>
+				<h3>用户管理</h3>
+				<div class="btn-group btn-group-justified" role="group">
+            		<a href="# " class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+            		<a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-search"></span> 查询</a>
+            		<a href="#"    class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-edit"></span> 更改</a>
+            		<a  id="id_delete"    class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 删除</a>           
+        		</div>
+       <form method="post" action="" >
+        {% csrf_token %}
+            <table class="table table-striped" >
+
+                <tr class="info">
+                	<td><strong>用户名</strong></td>
+                    <td><strong>邮箱</strong></td>
+                    <td><strong>状态</strong></td>
+                    <td><strong>分组</strong></td>
+                </tr>
+                {% if users %}
+                    {% for user in users %}
+                                <tr id = "list" class="list" >
+                                    <td data-toggle="tooltip" data-placement="left" id="td_username"><a href="#">{{ user.username}}</a></td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_email"><a href="#">{{ user.email}}</a></td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_active"><a href="#"> {{ user.is_active}}</a> </td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_username"><a href="#"> {{ user.group_name }}</a> </td>
+                                </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>没找到用户</p>
+                {% endif %}
+            </table>
+
+        </form>
+        		<nav aria-label="...">
+  					<ul class="pager">
+    					<li><a href="#">Previous</a></li>
+    					<li><a href="#">Next</a></li>
+  					</ul>
+				</nav>
 		</div>
 	</div>
+	<a href="{% url 'oltp_admin:logout' %}">注销</a></h1>
 {% endblock extend %}

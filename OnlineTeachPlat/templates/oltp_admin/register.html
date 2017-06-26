@@ -33,6 +33,12 @@
                 <input  class="form-control" id="id_re_password" name="re_password" type="password" />
             </div>
 
+
+            <div class="form-group" >
+                <label><input id='id_student' name='student' type="radio" />学生</label>
+                <label><input id='id_teacher' name='teacher' type="radio" />老师</label>
+            </div>
+
         <button  type="submit" class="btn btn-default" >注册</button>
         <button id='id_register' type='button' class="btn btn-default" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:login' %}"'>登录</button>
         </form>

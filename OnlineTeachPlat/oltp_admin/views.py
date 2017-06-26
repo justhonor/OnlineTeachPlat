@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from oltp_admin.form import RegisterForm
 
+from oltp_admin.models import UserInfo
+from django.contrib.auth.models import User, Group
 import pdb; 
+
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 # superuser root:root_11111 admin:admin_11111
 
@@ -17,10 +21,20 @@ def index(request):
     # 登录则显示index页面
     # 未登录则重定向url = /oltp/login
     # pdb.set_trace()
+    User = UserInfo()
+    groups = {}
+    users = User.Get_all_users()
+
+    # 获取每个用户的组名称
+    for user in users:
+        pass
+        # pdb.set_trace()
+        #groups[user.username]=user.groups.all()[0].name
+    
     if request.user.is_authenticated():
     	if request.user.username == 'admin':
     	    # 管理用户
-    		return render(request,"oltp_admin/admin_index.html") 
+    		return render(request,"oltp_admin/admin_index.html",{'users':users}) 
     	else:
     		# 普通用户
     		return render(request,"oltp_admin/index.html")	
@@ -41,6 +55,7 @@ def register(request):
     if request.method == "POST":
         # 将表单提交的数据交给RegisterForm 进行验证
         form = RegisterForm(request.POST.copy())
+        # import pdb; pdb.set_trace()
         if form.is_valid():
         	# 验证通过，创建用户
             form.save()
@@ -84,3 +99,12 @@ def _login(request, username, password, dict_var):
     else:
         dict_var["error"] = u'用户' + username + u'不存在或密码错误'
     return ret
+
+@csrf_exempt
+def admin(request):
+    '''管理用户'''
+    print "管理用户"
+    import pdb; pdb.set_trace()
+    return HttpResponse(content="recieve")
+    
+

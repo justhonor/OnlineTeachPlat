@@ -1,14 +1,27 @@
 .parent{
     margin-top: 50px;
+
 }
 
 .left{
     float: left;
     width: 100px;
-    margin-top: 30px;
+    margin-top: 60px;
 }
 
 .right{
     margin-left: 120px;
 }
 
+.left1{
+    float: left;
+    width: 100px;
+    margin-right: 20px;
+}
+.right1{
+    overflow: hidden;
+}
+.selected
+{
+ background-color: LightBlue !important;
+}
