@@ -15,14 +15,14 @@
 		<div class="right">
 				<h3>用户管理</h3>
 				<div class="btn-group btn-group-justified" role="group">
-            		<a href="# " class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> 新建</a>
-            		<a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-search"></span> 查询</a>
-            		<a href="#"    class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-edit"></span> 更改</a>
+            		<a id="dialog_link" class="btn btn-primary" role="button" href="#"><span class="glyphicon glyphicon-plus"></span> 新建</a>
+            		<a id="id_select" class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-search"></span> 查询</a>
+            		<a id="id_update"  class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-edit"></span> 更改</a>
             		<a  id="id_delete"    class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 删除</a>           
         		</div>
        <form method="post" action="" >
         {% csrf_token %}
-            <table class="table table-striped" >
+            <table class="table table-striped" id="table_list_userInfo" >
 
                 <tr class="info">
                 	<td><strong>用户名</strong></td>
@@ -32,7 +32,7 @@
                 </tr>
                 {% if users %}
                     {% for user in users %}
-                                <tr id = "list" class="list" >
+                                <tr id = "list_userInfo" class="list" >
                                     <td data-toggle="tooltip" data-placement="left" id="td_username"><a href="#">{{ user.username}}</a></td>
                                     <td data-toggle="tooltip" data-placement="left" id="td_email"><a href="#">{{ user.email}}</a></td>
                                     <td data-toggle="tooltip" data-placement="left" id="td_active"><a href="#"> {{ user.is_active}}</a> </td>
@@ -51,6 +51,28 @@
     					<li><a href="#">Next</a></li>
   					</ul>
 				</nav>
+
+                {# 新增用户隐藏表单 #}
+                <div id="dialog" align="center">
+                    <div class="form-group">
+                        <label class="lb">昵称: </label> 
+                        <input class="form-control" id="dia_username" name="username" type="text" />
+                    </div class="form-group">
+
+                    <div class="form-group">
+                        <label class="lb">邮箱: </label> 
+                        <input  class="form-control" id="dia_email" name="email" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label class="lb">密码:</label> 
+                        <input  class="form-control" id="dia_password" name="password" type="password" />
+                    </div>
+                    <div class="form-group" >
+                        <label><input id='dia_student' name='student' type="radio" />学生</label>
+                        <label><input id='dia_teacher' name='teacher' type="radio" />老师</label>
+                    </div>
+            </div>
+
 		</div>
 	</div>
 	<a href="{% url 'oltp_admin:logout' %}">注销</a></h1>
