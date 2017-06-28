@@ -18,11 +18,7 @@ class RegisterForm(forms.Form):
                                widget=forms.PasswordInput(attrs={'size': 20, 'class': "form-control"}))
     re_password = forms.CharField(label=u"确认密码:", max_length=20,
                                   widget=forms.PasswordInput(attrs={'size': 20, 'class': "form-control"}))
-    # student = forms.RadioSelect()
-    # teacher = forms.RadioSelect()
-
-    student = forms.RadioSelect()
-    teacher = forms.CharField()
+    group = forms.CharField(label="group",widget=forms.RadioSelect())
 
     def clean_username(self):
         ''' 验证昵称'''
@@ -61,15 +57,12 @@ class RegisterForm(forms.Form):
 
         cleaned_data = super(RegisterForm, self).clean()
 
-        # 防止由于有未提交的表单引起的form.is_valid()==flase
-        if cleaned_data.get("student") == "on":
-            cleaned_data.update({"teacher":"off"})
-        elif cleaned_data.get("teacher") == "on":
-            cleaned_data.update({"student":"off"})
         # pdb.set_trace()
         
         # 验证是否选择分组
-        if cleaned_data.get("student") != "on" and cleaned_data.get("teacher") != "on":
+        if cleaned_data.__contains__("group"):
+            pass
+        else:
             raise forms.ValidationError(u"您必须选取一个分组!!!")
 
         if cleaned_data.get("password") == cleaned_data.get("username"):
@@ -96,9 +89,9 @@ class RegisterForm(forms.Form):
         user = User.objects.create_user(username, email, password)
         
         # Add group_name for user 
-        if self.cleaned_data["student"] == "on":
+        if self.cleaned_data["group"] == "student":
             user.group_name = "学生"
-        elif self.cleaned_data["teacher"] == "on":
+        elif self.cleaned_data["group"] == "teacher":
             user.group_name = "老师"
         user.save()
         

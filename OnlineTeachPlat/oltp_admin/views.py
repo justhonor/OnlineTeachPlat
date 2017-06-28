@@ -55,8 +55,9 @@ def register(request):
 
     if request.method == "POST":
         # 将表单提交的数据交给RegisterForm 进行验证
-        form = RegisterForm(request.POST.copy())
         # import pdb; pdb.set_trace()
+        form = RegisterForm(request.POST.copy())
+        
         if form.is_valid():
             # 验证通过，创建用户
             form.save()

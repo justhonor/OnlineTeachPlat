@@ -32,15 +32,15 @@ $(function (){ // 注意dialog需要外层function包裹
       //获取密码
       var dia_password=$("input[id=dia_password]").val();
       //获取类型
-      var dia_student=$("input[id=dia_student]").val();
-      var dia_teacher=$("input[id_student]").val();
+      var dia_student=$("input[id=dia_student]:checked").val();
+      var dia_teacher=$("input[id=dia_teacher]:checked").val();
       //状态
       var status = "True"
-	  var group = ""
+	    var group = ""
       if (dia_student)
       {group = "学生"}
   	  else if(dia_teacher)
-  	  {group = "学生"}
+  	  {group = "老师"}
   	  else{group = "null"}
       
       data={
