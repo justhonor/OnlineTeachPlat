@@ -13,6 +13,8 @@ from django.contrib.auth.models import User, Group
 import pdb
 
 from django.views.decorators.csrf import csrf_exempt
+
+import simplejson as json 
 # Create your views here.
 # superuser root:root_11111 admin:admin_11111
 
@@ -134,6 +136,36 @@ def admin(request):
             return HttpResponse(content="update %s sucess" % (request.POST.get("username")))
         else:
             return HttpResponse(content="update %s failed" % (request.POST.get("username")))
+    # 查询用户信息
+    elif request.method == 'POST' and request.POST.get("type") == "search":
+        exist,userinfo  = search_user(request)
+        # import pdb; pdb.set_trace()
+        data = {}
+        if exist:
+            data = {
+                "exist":"1",
+                "username":userinfo.username,
+                "email":userinfo.email,
+                "group":userinfo.group_name,
+                "status":userinfo.is_active
+        }
+            print "search %s sucess" % (request.POST.get("search_name"))
+            return HttpResponse(content= json.dumps(data))
+        else:
+            data["exist"] = "0"
+            return HttpResponse(content= json.dumps(data))    
+
+def search_user(request):
+    try:
+        username = request.POST.get("search_name")
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+            return  True,user
+        else:
+            return False,"用户不存在"
+    except Exception as e:
+            return False,e
+
 
 def update_user(request):
     # 需要对字段合法性验证

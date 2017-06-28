@@ -16,7 +16,7 @@
 				<h3>用户管理</h3>
 				<div class="btn-group btn-group-justified" role="group">
             		<a id="dialog_link" class="btn btn-primary" role="button" href="#"><span class="glyphicon glyphicon-plus"></span> 新建</a>
-            		<a id="dialog_button_search" class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-search"></span> 查询</a>
+            		<a id="dialog_button_search" class="btn btn-primary" role="button" data-toggle="modal" data-target=".bs-example-modal-sm"><span class="glyphicon glyphicon glyphicon-search"></span> 查询</a>
             		<a id="dialog_button_update"  class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-edit"></span> 更改</a>
             		<a  id="id_delete"    class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 删除</a>           
         		</div>
@@ -32,11 +32,11 @@
                 </tr>
                 {% if users %}
                     {% for user in users %}
-                                <tr id = "list_userInfo" class="list" >
-                                    <td data-toggle="tooltip" data-placement="left" id="td_username"><a href="#">{{ user.username}}</a></td>
-                                    <td data-toggle="tooltip" data-placement="left" id="td_email"><a href="#">{{ user.email}}</a></td>
-                                    <td data-toggle="tooltip" data-placement="left" id="td_active"><a href="#"> {{ user.is_active}}</a> </td>
-                                    <td data-toggle="tooltip" data-placement="left" id="td_group"><a href="#"> {{ user.group_name }}</a> </td>
+                                <tr  class="list" >
+                                    <td data-toggle="tooltip" data-placement="left" id="td_username">{{ user.username}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_email">{{ user.email}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_active"> {{ user.is_active}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_group">{{ user.group_name }}</td>
                                 </tr>
                     {% endfor %}
                 {% else %}
@@ -96,6 +96,20 @@
                 </div>  
         </div>
 
+        {# 查询 #}
+        <div id ="myModal" class="modal fade bs-example-modal-sm"  role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog modal-sm" >
+                    <div class="modal-content">
+                        <h3>请输入用户名</h3>
+                        <div class="input-group">
+                            <input id="modal_input_search" type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                            <button id="modal_button_search" class="btn btn-primary" type="button">Go!</button>
+                            </span>
+                        </div>
+            </div>
+        </div>
+</div>
 
 	</div>
 	<a href="{% url 'oltp_admin:logout' %}">注销</a></h1>
