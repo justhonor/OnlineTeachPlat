@@ -127,7 +127,37 @@ def admin(request):
             return HttpResponse(content="Add %s sucess" % (request.POST.get("username")))
         else:
             return HttpResponse(content="add %s failed" % (request.POST.get("username")))
+    # 修改用户信息
+    elif request.method == 'POST' and request.POST.get("type") == "update":
+        if update_user(request):
+            print "update %s sucess" % (request.POST.get("username"))
+            return HttpResponse(content="update %s sucess" % (request.POST.get("username")))
+        else:
+            return HttpResponse(content="update %s failed" % (request.POST.get("username")))
 
+def update_user(request):
+    # 需要对字段合法性验证
+    # group -- 学生，教师，管理员
+    # status -- True/False
+    # username,email,password 的验证
+    # 可在js中验证连带add_user()一起
+    try:
+        # import pdb; pdb.set_trace()
+        username = request.POST.get("username") 
+        user = User.objects.get(username=username)
+        
+        if request.POST.get("email"):
+            user.email = request.POST.get("email")
+        if request.POST.get("password"):
+            user.password = request.POST.get("password")
+        if request.POST.get("group"):
+            user.group_name = request.POST.get("group") 
+        if request.POST.get("status"):
+            user.is_active = request.POST.get("status")
+        user.save()
+        return True
+    except Exception as e:
+        return False
 
 def del_user(request, username):
     try:
