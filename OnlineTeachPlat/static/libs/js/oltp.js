@@ -208,8 +208,40 @@ $(function (){ // 注意dialog需要外层function包裹
 	   	  		alert("Data: " + data1 + "\nStatus: " + status);
 		})
 
-		$(this).dialog("close");
-    }
+		  $(this).dialog("close");
+      // 新增用户显示在第一行
+      var ta = document.getElementById("table_list_userInfo");
+      var ftr = document.createElement("tr");
+      var td_u = document.createElement("td");
+      var td_a = document.createElement("td");
+      var td_e = document.createElement("td");
+      var td_g = document.createElement("td");
+
+      ftr.className = "list"
+      var biaotou = document.getElementById("biaotou");
+      biaotou.after(ftr)
+      
+      td_u.dataset.toggle="tooltip"
+      td_u.dataset.placement="left"
+      td_u.textContent = dia_username;
+      ftr.appendChild(td_u)
+
+      td_e.dataset.toggle="tooltip"
+      td_e.dataset.placement="left"
+      td_e.textContent = dia_email;
+      ftr.appendChild(td_e)
+      
+      td_a.dataset.toggle="tooltip"
+      td_a.dataset.placement="left"
+      td_a.innerText = "True"
+      ftr.appendChild(td_a)
+
+      td_g.dataset.toggle="tooltip"
+      td_g.dataset.placement="left"
+      td_g.innerText = group
+      ftr.appendChild(td_g)
+      
+     }
 
     },{
        text:"取消",

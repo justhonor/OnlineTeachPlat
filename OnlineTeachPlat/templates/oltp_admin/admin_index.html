@@ -8,7 +8,7 @@
 {% block extend %}
 	<div class="parent">
 		<div class="left">
-			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:register' %}"'>用户管理</button>
+			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'oltp_admin:index' %}"'>用户管理</button>
 
 			<button style="margin:10px;" id='id_register' type='button' class="btn btn-primary">课程审核</button>
 		</div>
@@ -24,7 +24,7 @@
         {% csrf_token %}
             <table class="table table-striped" id="table_list_userInfo" >
 
-                <tr class="info">
+                <tr class="info" id="biaotou">
                 	<td><strong>用户名</strong></td>
                     <td><strong>邮箱</strong></td>
                     <td><strong>状态</strong></td>
