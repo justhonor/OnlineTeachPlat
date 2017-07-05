@@ -8,31 +8,63 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from oltp_admin.form import RegisterForm
 
-from oltp_admin.models import UserInfo
+from oltp_admin.models import UserInfo,ClassInfo
 from django.contrib.auth.models import User, Group
 import pdb
 
 from django.views.decorators.csrf import csrf_exempt
 
 import simplejson as json 
+
 # Create your views here.
 # superuser root:root_11111 admin:admin_11111
 
+# 每页显示10位用户
+global PageUsers
+PageUsers = 10
+
+@csrf_exempt
+def review(request):
+        if request.method == 'POST' and request.POST.get("type") == "delete":
+            class_ids = request.POST.get("class_ids")
+            Class_ids = class_ids.split(',')[:-1]
+            try:
+                # import pdb; pdb.set_trace()
+                for cid in Class_ids:
+                    c = ClassInfo.objects.get(id=cid)
+                    c.status = "拒绝"
+                    c.save()
+                return HttpResponse(content="delete class %s sucess" % (cid))
+            except Exception as e:
+                return HttpResponse(content="delete class %s failed" % (cid))
+
+        elif request.method == 'POST' and request.POST.get("type") == "pass":
+            class_ids = request.POST.get("class_ids")
+            Class_ids = class_ids.split(',')[:-1]
+            try:
+                # import pdb; pdb.set_trace()
+                for cid in Class_ids:
+                    c = ClassInfo.objects.get(id=cid)
+                    c.status = "通过"
+                    c.save()
+                return HttpResponse(content="pass class %s sucess" % (cid))
+            except Exception as e:
+                return HttpResponse(content="pass class %s failed" % (cid))
+        else:
+            Classes = ClassInfo.objects.all()
+            return render(request, "oltp_admin/ClassReview.html",{'Classes':Classes})
 
 def index(request):
     '''主视图'''
     # 登录则显示index页面
     # 未登录则重定向url = /oltp/login
     # pdb.set_trace()
-    User = UserInfo()
-    groups = {}
-    users = User.Get_all_users()
+    # User = UserInfo()
+    # users = User.Get_all_users()
 
-    # 获取每个用户的组名称
-    for user in users:
-        pass
-        # pdb.set_trace()
-        # groups[user.username]=user.groups.all()[0].name
+    LastUser = User.objects.last()
+    LastUserId = LastUser.id
+    users =  User.objects.filter(id__lte=LastUserId).order_by('id').reverse()[:PageUsers]
 
     if request.user.is_authenticated():
         if request.user.username == 'admin':
@@ -153,7 +185,48 @@ def admin(request):
             return HttpResponse(content= json.dumps(data))
         else:
             data["exist"] = "0"
-            return HttpResponse(content= json.dumps(data))    
+            return HttpResponse(content= json.dumps(data))  
+    # 下一页
+    elif request.method == 'POST' and request.POST.get("type") == "next":
+        status,users = next_users(request)
+        # import pdb; pdb.set_trace()
+        if status and request.user.is_authenticated() and users.exists():
+            if request.user.username == 'admin':
+                # 管理用户
+                return render(request, "oltp_admin/admin_index.html", {'users': users})
+        else:
+                # 没有更多用户
+                return HttpResponseRedirect("/oltp/") 
+
+    # 上一页
+    elif request.method == 'POST' and request.POST.get("type") == "previous":
+        status,users = previous_users(request)
+        # import pdb; pdb.set_trace()
+        if status and request.user.is_authenticated() and users.exists():
+            if request.user.username == 'admin':
+                # 管理用户
+                return render(request, "oltp_admin/admin_index.html", {'users': users})
+        else:
+                # 没有更多用户
+                return HttpResponseRedirect("/oltp/")  
+
+def previous_users(request):
+    try:
+        FirstUser = request.POST.get("reference_user")
+        FirstUserId = User.objects.filter(username=FirstUser).values("id")
+        users =  User.objects.filter(id__gt=FirstUserId).order_by('id').reverse()[:PageUsers]
+        return True,users
+    except Exception as e:
+        return False,e
+
+def next_users(request):
+    try:
+        LastUser = request.POST.get("reference_user")
+        LastUserId = User.objects.filter(username=LastUser).values("id")
+        users =  User.objects.filter(id__lt=LastUserId).order_by('id').reverse()[:PageUsers]
+        return True,users
+    except Exception as e:
+        return False,e
 
 def search_user(request):
     try:

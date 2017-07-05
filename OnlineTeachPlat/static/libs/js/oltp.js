@@ -9,6 +9,120 @@ $(document).ready(function(){
   	});
 
 /************************************
+*     课程通过
+*     ClassReview.html --> views.review
+**************************************/
+$("#class_button_pass").click(function(e){
+    // console.log(e);
+
+    select = $('.selected')
+    var num=$('.selected').length
+    if (num>3){
+            // $('td').nextAll('.selected').parent().hide()
+
+            var num=$('.selected').length
+            var j=0;
+
+            var data = {type:"pass"};
+            var str  = ""
+            var sp = ","
+            // 取数据,依赖于每行有4列来取每行首列
+            for (var i=1;i<num;i=i+5)
+            {
+              a = $(".selected:eq("+i+")").text()
+              j = j + 1;
+              num = num - 1;
+              str = str.concat(a).concat(sp)
+              // data[j] = $(".selected:eq("+i+")").text()
+            }
+            data["class_ids"] = str
+
+          // console.log(str)
+          // console.log(data)
+          // 后台删
+          $.post("/oltp/admin/review/",data,function(data1,status){
+            alert("Data: " + data1 + "\nStatus: " + status);
+            window.location.reload()
+          })
+        }
+        else{
+            alert("请选择至少选择一行数据") 
+        }
+    });
+
+/************************************
+*     课程拒绝
+*     ClassReview.html --> views.review
+**************************************/
+$("#class_button_reject").click(function(e){
+    // console.log(e);
+
+    select = $('.selected')
+    var num=$('.selected').length
+    if (num>3){
+            // $('td').nextAll('.selected').parent().hide()
+
+            var num=$('.selected').length
+            var j=0;
+
+            var data = {type:"delete"};
+            var str  = ""
+            var sp = ","
+            // 取数据,依赖于每行有4列来取每行首列
+            for (var i=1;i<num;i=i+5)
+            {
+              a = $(".selected:eq("+i+")").text()
+              j = j + 1;
+              num = num - 1;
+              str = str.concat(a).concat(sp)
+              // data[j] = $(".selected:eq("+i+")").text()
+            }
+            data["class_ids"] = str
+
+          // console.log(str)
+          // console.log(data)
+          // 后台删
+          $.post("/oltp/admin/review/",data,function(data1,status){
+            alert("Data: " + data1 + "\nStatus: " + status);
+            window.location.reload()
+          })
+        }
+        else{
+            alert("请选择至少选择一行数据") 
+        }
+    });
+
+/************************************
+*     查找上一页
+*     admin_index.html --> views.admin
+**************************************/
+$("#PreviousPage").click(function(e){
+  // alert("nextpage");
+  // 找到最后显示的用户名
+  FirstUser = $("tr.list:first").children().first().text()
+  document.getElementById("id_reference_user").value = FirstUser
+  document.getElementById("id_type").value = "previous"
+  
+  $("#id_postData").submit()
+
+});
+
+/************************************
+*     查找下一页
+*     admin_index.html --> views.admin
+**************************************/
+$("#NextPage").click(function(e){
+  // alert("nextpage");
+  // 找到最后显示的用户名
+  LastUser = $("tr.list:last").children().first().text()
+  document.getElementById("id_reference_user").value = LastUser
+  document.getElementById("id_type").value = "next"
+  
+  $("#id_postData").submit()
+
+});
+
+/************************************
 *     查找用户信息
 *     admin_index.html --> views.admin
 **************************************/

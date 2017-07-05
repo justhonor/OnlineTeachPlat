@@ -1,0 +1,37 @@
+{% extends "oltp_admin/admin_index.html" %}
+{% block right %}
+	<h3>课程审核</h3>
+	<div class="btn-group btn-group-justified" role="group">
+        <a id="class_button_pass"  class="btn btn-primary" role="button"><span class="glyphicon glyphicon glyphicon-edit"></span> 通过</a>
+        <a  id="class_button_reject"    class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 拒绝</a>           
+    </div>
+           <form method="post" action="/oltp/admin/" name="postData" id="id_postData">
+        {% csrf_token %}
+            <table class="table table-striped" id="table_list_userInfo" >
+                <tbody id="table_body">
+                <tr class="info" id="class_biaotou">
+                	<td><strong>课程名</strong></td>
+                    <td><strong>课程ID</strong></td>
+                    <td><strong>申请人</strong></td>
+                    <td><strong>申请时间</strong></td>
+                    <td><strong>课程状态</strong></td>
+                </tr>
+                {% if Classes %}
+                    {% for class in Classes %}
+                                <tr  class="list" >
+                                    <td data-toggle="tooltip" data-placement="left" id="td_username">{{ class.class_name}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_email">{{ class.id}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_active"> {{ class.request_name}}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_group">{{ class.request_time }}</td>
+                                    <td data-toggle="tooltip" data-placement="left" id="td_group">{{ class.status }}</td>
+                                </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>需审核信息</p>
+                {% endif %}
+                </tbody>
+            </table>
+            <input id="id_reference_user" type="hidden" name="reference_user" value="">
+            <input id="id_type" type="hidden" name="type" value="">
+        </form>
+{% endblock right %}
