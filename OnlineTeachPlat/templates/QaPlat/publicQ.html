@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div class="page-header">
+	    <h2>发布主题</h2>
+
+	    <div >
+	        <input  id="titlePublic" name="username" type="text" style="width:100%" placeholder="请输入标题内容" />
+	    </div>
+	    <br>
+	    <div id="summernote" ></div>
+
+	    	<button class="btn btn-primary" id="buttonPublic">提交</button>  
+	    	<button class="btn btn-primary" onclick='javascrtpt:window.location.href="{% url 'QaPlat:qaPlat' %}"' > 取消</button>
+</div>
+{% endblock content %}

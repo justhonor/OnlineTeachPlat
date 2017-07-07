@@ -22,11 +22,9 @@ class ClassInfo(models.Model):
 	)
 	id = models.AutoField(primary_key=True)
 	class_name = models.CharField(max_length=100)
+	teacher_id = models.CharField(max_length=100,default=True)
 	request_name = models.CharField(max_length=100)
 	request_time = models.DateField(auto_now=True)
 	status = models.CharField(max_length=4,default="等待",editable=False)
 
 		
-
-
-

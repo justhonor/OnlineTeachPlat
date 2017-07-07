@@ -16,8 +16,10 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from oltp_admin import urls
+from QaPlat import urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^oltp/', include('oltp_admin.urls',namespace='oltp_admin'))
+    url(r'^oltp/', include('oltp_admin.urls',namespace='oltp_admin')),
+    url(r'^QaPlat/', include('QaPlat.urls',namespace='QaPlat')),
 ]

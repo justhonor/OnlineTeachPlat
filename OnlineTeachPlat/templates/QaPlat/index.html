@@ -1,0 +1,137 @@
+
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+	<div class="parent">
+		<div class="left">
+			<div class="list-group">
+			  <a href="#" class="list-group-item active" id="item-gonggao" >公告</a>
+			  <a href="#" class="list-group-item" id="item-biaozhun" >评分标准</a>
+			  <a href="#" class="list-group-item" id="item-kejian">课件</a>
+			  <a href="#" class="list-group-item" id="item-zuoye">作业</a>
+			  <a href="{% url 'QaPlat:qaPlat' %}" class="list-group-item" id="item-taolun">讨论区</a>
+			</div>
+		</div>
+
+		<div class="right" >
+
+			<div id="list-item-gonggao" >
+				<div class="page-header ">
+	  				<h1>公告</h1>
+				</div>
+				<div align="left" >
+
+					<p>各位老学员，4月技术方向有以下课程上线招生：</p>
+					<ul>
+						<li>Java应用基础已上线：翁恺老师亲授，2个月学完学费返现</li>
+						<li>Web安全工程师已上线：网易讲师团队，老师热心负责</li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="list-item-biaozhun" class="hidden">
+				<div class="page-header">
+	  				<h1>评分标准</h1>
+				</div>
+				<div align="left" >
+
+					<p>本课程考核有单元测验、课程考试、课程讨论三部分组成，具体评分比例如下：</p>
+					<ul>
+						<li>单元测验，占20%</li>
+						<li>讨论区活跃度，占10%</li>
+						<li>课程考试，占70%</li>
+					</ul>
+					<p>课程合格后可申请电子证书。</p>
+				</div>
+			</div>
+
+			<div id="list-item-kejian" class="hidden">
+				<div class="page-header">
+	  				<h1>课件</h1>
+				</div>
+				<div align="left" >
+
+					<p>课件请大家及时下载预习:</p>
+					<ul>
+						<li><a href="{% static "libs/img/c语言" %}" download="C语言-历史">C语言-历史</a></li>
+						<li><a href="{% static "libs/img/C语言-基础语法"  %}" download="C语言-基础语法">C语言-基础语法</a></li>
+						<li><a href="{% static "libs/img/C语言-基本用法" %}"download="C语言-基本用法">C语言-基本用法</a></li>
+						<li><a href="{% static "libs/img/C语言-指针" %}" download="C语言-指针">C语言-指针</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="list-item-zuoye" class="hidden">
+				<div class="page-header">
+	  				<h1>作业</h1>
+				</div>
+				<div align="left" >
+
+				<div >
+					<h4 style="display: inline-block" >请选择要提交的作业:</h4>
+					<select name="selOp" id="selOp" > 
+						    <option selected value="a">Python-基础语法</option> 
+						    <option value="b" >C语言-历史</option> 
+						    <option value="c" >C语言-基础语法</option> 
+						    <option value="d" >C语言-基本用法</option> 
+						    <option value="e" >C语言-指针</option> 
+				    </select> 
+				</div >
+				<br>
+					<form enctype="multipart/form-data" action="/QaPlat/uploadFile/" method="post" style="margin-left:175px"> 
+					{% csrf_token %} 
+					   <input type="file" name="myfile" />  
+					   <br/>  
+					   <input type="submit" value="提交"/>  
+					</form>  
+				</div>
+			</div>
+
+			<div id="list-item-taolun" class="hidden">
+				<div class="page-header">
+	  				<h1>问答平台</h1>
+				</div>
+				<p align="left">欢迎大家来到讨论区！本讨论区供各位同学就课程问题进行交流学习。请同学们认真阅读下面的【讨论区使用规则】，然后再进行相关发表，谢谢！</p>
+				<br>
+				<div align="left">
+				<a id="dialog_button_push"  class="btn btn-primary" role="button"  ><span class="glyphicon glyphicon glyphicon-edit"></span>发布问题</a>
+				</div>
+
+				<div class="page-header" align="left">
+	  				<h4>我关注的问题</h4>
+				</div>
+				<br>
+				<br>
+				<div class="page-header" align="left">
+	  				<h4>最新问题</h4>
+	  				<div id="new_questions">
+	  					<div id="new_questions_user">
+	  						
+	  					</div>
+	  					<div id="new_questions_title">
+	  						<p> <strong>未来百度、阿里巴巴、腾讯三巨头谁会独领风骚？ </strong> </p>
+	  					</div>
+	  					<div id="new_questions_content">
+	  						<text>
+	  								其实腾讯已经到顶峰，阿里才刚起步。微信腾讯游戏都已经做到了极致。而阿里的天猫出海，菜鸟物流，阿里云，蚂蚁
+	  					</div>
+	  					<div id="new_questions_sociality">
+	  						
+	  					</div>
+	  					
+	  				</div>
+				</div>
+				{# 发布问题 #}
+                <div id="dialog_push" align="center">
+                		<div >
+	                        <input  id="title" name="username" type="text" style="width:100%" placeholder="标题内容" />
+	                    </div>
+	                    <br>
+	                     <div id="summernote" ></div>    
+            	</div>
+			</div>
+	</div>
+</div>
+{% endblock content %}
+

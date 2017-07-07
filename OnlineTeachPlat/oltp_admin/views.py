@@ -72,7 +72,8 @@ def index(request):
             return render(request, "oltp_admin/admin_index.html", {'users': users})
         else:
             # 普通用户
-            return render(request, "oltp_admin/index.html")
+            # import pdb; pdb.set_trace()
+            return render(request, "QaPlat/index.html")
     else:
         return HttpResponseRedirect("/oltp/login")
 
@@ -125,6 +126,7 @@ def _login(request, username, password, dict_var):
     '''登陆核心方法'''
     ret = False
     # 验证用户
+    # import pdb; pdb.set_trace()
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
@@ -254,7 +256,9 @@ def update_user(request):
         if request.POST.get("email"):
             user.email = request.POST.get("email")
         if request.POST.get("password"):
-            user.password = request.POST.get("password")
+            # user.password = request.POST.get("password")
+            # 使用加密算法加密存储密码
+            user.set_password(request.POST.get("password"))
         if request.POST.get("group"):
             user.group_name = request.POST.get("group") 
         if request.POST.get("status"):
