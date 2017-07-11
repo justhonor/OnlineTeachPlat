@@ -11,14 +11,29 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-text='你好绿色情心情'
-text='你好色情a'
-text='你好赌博吧到沙发'
 
-# text
-# import pdb; pdb.set_trace()
+text='你好色 情吧'
+text='你好*色*情*我们吧'
+# c1 = "."
+# c2 = " "
+# c3 = "*"
+# c4 = "##"
+
+# cm  = [" ",".","*","#","你","n"]
+# text='你好赌博吧到沙发'
+
 s = SS()
 print s.filter(text)
+# text
+# for uchar in cm:
+# 	# import pdb; pdb.set_trace()
+# 	print "type:%s uchar:%s ord:%s "%(type(uchar),uchar,ord(uchar))
+# 	s.isSymbol(uchar)
+
+
+
+
+# print s.filter(text)
 # nd = TrieNode()
 # root = TrieNode()
 # nd.Init(root)

@@ -99,6 +99,25 @@ class SensitiveService(TrieNode):
 		except Exception as e:
 			print "初始化敏感词失败"
 
+	def isSymbol(self,uchar):
+		if (uchar >= u'\u0030' and uchar<=u'\u0039') or (uchar >= u'\u0041' and uchar<=u'\u005a') or (uchar >= u'\u0061' and uchar<=u'\u007a')or (uchar >= u'\u4e00' and uchar<=u'\u9fa5'):
+		   	return False
+		else:
+			return True
+		# if uchar >= u'\u0030' and uchar<=u'\u0039':
+		# 	print  "%s 数字"%uchar
+		# elif (uchar >= u'\u0041' and uchar<=u'\u005a') or (uchar >= u'\u0061' and uchar<=u'\u007a'):
+		# 	print  "%s 字母"%uchar
+		# elif uchar >= u'\u4e00' and uchar<=u'\u9fa5':
+		# 	print  "%s 汉字"%uchar
+		# else:
+		# 	print  "%s 符号"%uchar
+
+
+
+
+
+
 	def filter(self,text):
 
 		replacement = "***"
@@ -115,6 +134,10 @@ class SensitiveService(TrieNode):
 			han = text[position]
 			# import pdb; pdb.set_trace()
 			# print "汉字  %s"%han
+			if self.isSymbol(han):
+				position = position+1
+				continue
+
 			if tempNode.has_key(han):
 				print "前缀中有该字:%s 前缀树:%s "%(han,tempNode)
 				if tempNode[han].has_key('_end_'):
@@ -135,9 +158,9 @@ class SensitiveService(TrieNode):
 					tempNode = tempNode[han]
 					print "子树:%s"%tempNode 
 			else:
-					if position == begin:
-						print "前缀中没有该字:%s begin:%s position:%s"%(han,begin,position)
-						result = result + OneWord+ han
+					
+					print "前缀中没有该字:%s begin:%s position:%s"%(han,begin,position)
+					result = result + OneWord+ han
 					position = begin + 1
 					begin = position
 					tempNode = rootNode.subNodes
