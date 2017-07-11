@@ -18,22 +18,27 @@
 				<br>
 				<div class="page-header" align="left">
 	  				<h4>最新问题</h4>
-	  				<div id="new_questions">
-	  					<div id="new_questions_user">
-	  						
-	  					</div>
-	  					<div id="new_questions_title">
-	  						<p> <strong>未来百度、阿里巴巴、腾讯三巨头谁会独领风骚？ </strong> </p>
-	  					</div>
-	  					<div id="new_questions_content">
-	  						<text>
-	  								其实腾讯已经到顶峰，阿里才刚起步。微信腾讯游戏都已经做到了极致。而阿里的天猫出海，菜鸟物流，阿里云，蚂蚁
-	  					</div>
-	  					<div id="new_questions_sociality">
-	  						
-	  					</div>
-	  					
-	  				</div>
+	  			</div>
+
+	  			<div>
+	  				{% for newQuestion in news %}
+		  				  <div class="new_questions" style="margin-bottom:20px">
+		  					<div class="new_questions_user" align="left">
+		  						<h4>{{newQuestion.username}}
+		  						创建于:{{newQuestion.date}}</h4>
+		  					</div>
+		  					<div class="new_questions_title">
+		  						{# <h3>{{newQuestion.title}}</h3> #}
+		  						{{newQuestion.title}}
+		  					</div>
+		  					<div class="new_questions_content">
+		  						  {{newQuestion.content}}
+		  					</div>
+		  				  </div>
+	  			   {% endfor %}
+
 				</div>
+
+
 
 {% endblock content%}

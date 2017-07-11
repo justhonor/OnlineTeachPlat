@@ -1,8 +1,21 @@
 $(document).ready(function(){
-	/************************************
-	*     渲染选中行 
-	*     仅选中渲染
-	**************************************/
+/************************************
+*  question 内容的html标签内容被转义
+*  现将转移内容重新改写成html标签
+**************************************/
+update_content()
+function update_content(){
+	// alert("in update_content")
+	content = document.getElementsByClassName("new_questions_content")
+	for(i=0;i<content.length;i++){
+		text = content[i].innerText
+		content[i].innerHTML = text	
+	}
+}
+/************************************
+*     渲染选中行 
+*     仅选中渲染
+**************************************/
 	$(".list-group-item").click(function(e){
 		$(this).prevAll().removeClass("active")
 		$(this).nextAll().removeClass("active")
@@ -62,10 +75,9 @@ $('#buttonPublic').click(function(e){
 	    }
 	    else{
 	    	alert("发布失败");
-	    }
-	   	
-	   	
-	})
+	    }	
+	});
+
 });
 
 });

@@ -7,9 +7,21 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
 
+from django.contrib.auth.models import User, Group
 from QaPlat.models import Question
+from QaPlat.SensitiveService import SensitiveService as Sservice
 
 # Create your views here.
+
+class viewObject(object):
+    """前端显示所需数据集合"""
+    def setKey(self,key,value):
+        self.__setattr__(key,value)
+
+    def getKey(self,key):
+        return self.__getattribute__(key)
+
+
 @csrf_exempt
 def publicQ(request):
     if request.method == 'POST':
@@ -22,14 +34,19 @@ def publicQ(request):
             else:
                 return HttpResponse(content="fail")
                 # return HttpResponse(content="public question fail:%s"%log)
-    return render(request, "QaPlat/publicQ.html")
+    return render(request, "QaPlat/publicQ.html") 
 
 # save the question
 def publicS(request):
     # import pdb; pdb.set_trace()
     try:
-        title = request.POST.get('title')
-        content = request.POST.get("content")
+        # 敏感词过滤
+        Sensitive = Sservice()
+        # import pdb; pdb.set_trace()
+        title =  Sensitive.filter(request.POST.get('title'))
+        content = Sensitive.filter(request.POST.get('content'))
+        # title = request.POST.get('title')
+        # content = request.POST.get("content")
         userId  = request.user.id
         # import pdb; pdb.set_trace()
         question = Question.objects.create(title=title,content=content,user_id=userId)
@@ -39,7 +56,23 @@ def publicS(request):
 
 
 def qaPlat(request):
-    return render(request, "QaPlat/qa.html")
+    # 显示最新问题
+    questions =  Question.objects.order_by('id').reverse()
+
+    news = []
+    for qa in questions:
+        if qa.title == "" or qa.user_id == "":
+            continue
+        username = User.objects.get(id=qa.user_id).username
+        newQuestion = viewObject() 
+        newQuestion.setKey("title",qa.title)
+        newQuestion.setKey("content",qa.content)
+        newQuestion.setKey("date",qa.create_date)
+        newQuestion.setKey("username",username)
+        news.append(newQuestion)
+
+    return render(request, "QaPlat/qa.html",{'news':news})
+
 
 def index(request):
 	return render(request, "QaPlat/qa.html")
