@@ -10,8 +10,11 @@ class Message(models.Model):
 	id = models.AutoField(primary_key=True)
 	fromid = models.CharField(max_length=10)
 	toid = models.CharField(max_length=10)
+
+	# 会话ID,toid_fromid or fromid_toid 两者较小的放在最前面
 	conversation_id = models.CharField(max_length=10)
 	content =  models.CharField(max_length=256)
+	has_read = models.BooleanField(default=False)
 	create_date = models.DateField(auto_now=True)
 
 # 问题
@@ -33,9 +36,4 @@ class Comment(models.Model):
 
 	# 评论的实体ID type:1 问题 2评论 
 	entity_id = models.CharField(max_length=10)
-	entity_type = models.IntegerField()
-
-
-
-
-
+	entity_type = models.CharField(max_length=1)

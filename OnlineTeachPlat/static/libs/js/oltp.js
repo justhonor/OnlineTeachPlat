@@ -235,7 +235,19 @@ $(function (){ // 注意dialog需要外层function包裹
     ],
    closeOnEscape:false, //是否esc
    title:"更改信息", //对话框标题
-   position:"center",//对话框弹出的位置 top left right center bottom 默认是center
+   position: {
+　　　　　　my: "center",
+　　　　　　at: "center",
+　　　　　　of: window,
+　　　　　　collision: "fit",
+　　　　　　// Ensure the titlebar is always visible
+　　　　　　using: function( pos ) {
+　　　　　　　　var topOffset = $( this ).css( pos ).offset().top;
+　　　　　　　　if ( topOffset < 0 ) {
+　　　　　　　　　　$( this ).css( "top", pos.top - topOffset );
+　　　　　　　　}
+　　　　　　}
+　　　　},//对话框弹出的位置 top left right center bottom 默认是center
    width:450, //对话框宽度
    height:330, //对话框高度
    resizable:false, //是否可以改变大小操作  默认true
@@ -366,7 +378,19 @@ $(function (){ // 注意dialog需要外层function包裹
     ],
    closeOnEscape:false, //是否esc
    title:"添加用户操作界面", //对话框标题
-   position:"center",//对话框弹出的位置 top left right center bottom 默认是center
+   position: {
+　　　　　　my: "center",
+　　　　　　at: "center",
+　　　　　　of: window,
+　　　　　　collision: "fit",
+　　　　　　// Ensure the titlebar is always visible
+　　　　　　using: function( pos ) {
+　　　　　　　　var topOffset = $( this ).css( pos ).offset().top;
+　　　　　　　　if ( topOffset < 0 ) {
+　　　　　　　　　　$( this ).css( "top", pos.top - topOffset );
+　　　　　　　　}
+　　　　　　}
+　　　　},//对话框弹出的位置 top left right center bottom 默认是center
    width:500, //对话框宽度
    height:330, //对话框高度
    resizable:false, //是否可以改变大小操作  默认true

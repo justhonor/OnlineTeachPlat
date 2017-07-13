@@ -1,4 +1,156 @@
 $(document).ready(function(){
+
+/************************************
+*     展现用户会话信息
+*     message.html --> views.message
+**************************************/
+$(".friendId_sub").click(function(e){
+	console.log(e)
+	var f = "#" + this.parentElement.id
+	$(f).submit()
+	// $(this).submit()
+	// $("#id_friendId").submit()
+});
+
+/************************************
+*     站内信
+*     message.html --> views.message
+**************************************/
+$(function (){ // 注意dialog需要外层function包裹
+  //注册对话框
+  $("#dialogSendMessage").dialog({
+   //设置对话框打开的方式 不是自动打开
+   autoOpen:false,
+   show:"blind",
+   hide:"explode",
+   modal:true,
+   buttons:[
+    {
+     text:"发送",
+     click:function (){
+     	friendName = document.getElementById("friendName").value
+     	message = document.getElementById("messageArea").value
+     	data ={
+     		friendName:friendName,
+     		content:message,
+     		type:"sendM"
+     	}
+
+     	$.post("/QaPlat/message/",data,function(data1,status){
+     		alert(data1)
+     		$(this).dialog("close");
+     	})
+
+     }
+
+    },{
+       text:"取消",
+       click:function(){
+  			$(this).dialog("close");
+        }
+     }
+    ],
+   closeOnEscape:false, //是否esc
+   title:"发私信", //对话框标题
+   position: {
+　　　　　　my: "center",
+　　　　　　at: "center",
+　　　　　　of: window,
+　　　　　　collision: "fit",
+　　　　　　// Ensure the titlebar is always visible
+　　　　　　using: function( pos ) {
+　　　　　　　　var topOffset = $( this ).css( pos ).offset().top;
+　　　　　　　　if ( topOffset < 0 ) {
+　　　　　　　　　　$( this ).css( "top", pos.top - topOffset );
+　　　　　　　　}
+　　　　　　}
+　　　　},//对话框弹出的位置 top left right center bottom 默认是center
+   width:500, //对话框宽度
+   height:330, //对话框高度
+   resizable:false, //是否可以改变大小操作  默认true
+   }); 
+  
+  //触发连接的事件 当点击连接打开一个对话
+  $("#sendMessage").click(function (){
+   //open参数 作用：打开对话框
+   $("#dialogSendMessage").dialog("open");
+  });
+ });
+
+
+/************************************
+*  提交评论 
+*  oneQa.html --> QaPlat.commentSubmit
+**************************************/
+$("#buttonComment").click(function(e){
+	entity_type = 1
+	entity_id = document.getElementById("qid_input").value
+	comment = $("#summernote_comment").summernote('code')
+
+	data = {
+		entity_id:entity_id,
+		entity_type:entity_type,
+		comment:comment,
+	}
+	if(comment=="<p><br></p>"){
+		alert("请输入评论内容!")
+	}
+	else{
+		$.post("/QaPlat/commentSubmit/",data,function(data1,status){
+			alert("评论:" + data1)
+			// window.history.back(-1)
+			window.location.reload()
+
+		});
+	}
+})
+
+$('#summernote_comment').summernote({
+
+   		height: 120,         // set editor height
+  		minHeight: null,             // set minimum height of editor
+  		maxHeight: null,             // set maximum height of editor
+  		focus: true,                  // set focus to editable area after initializing summernote
+  		placeholder: "评论内容",
+  		align:"left",
+
+});
+
+/************************************
+*  发送quetionID用于显示改问题的详细信息 
+*  qa.html --> QaPlat.oneQuestion
+**************************************/
+$(".questionTilte").click(function(e){
+	console.log(e)
+	qaId = $(this).parent().next().val()
+	title = this.innerText
+	content = $(this).parent().parent().parent().next().text()
+	user_date = $(this).parent().parent().parent().prev().contents().text()
+	var o = "#"+qaId
+	$(o).submit()
+	// $(o).submit(function(e){
+	// 	success:function(data){
+	// 		getElementById("user_date").innerText=user_date
+	// 	    getElementById("one_questions_title").innerText=title
+	// 	    getElementById("one_questions_uid").innerText=qaId
+	// 	    getElementById("one_questions_content").innerText=content
+	// 	}
+	// })
+
+	data = {
+		"questionId":qaId,
+	}
+
+	// $.post("/QaPlat/oneQuestion/",data,function(data1,status){
+ //            alert("Data: " + data1 + "\nStatus: " + status);
+ //            // window.location.reload()
+ //            getElementById("user_date").innerText=user_date
+ //            getElementById("one_questions_title").innerText=title
+ //            getElementById("one_questions_uid").innerText=qaId
+ //            getElementById("one_questions_content").innerText=content
+ //    })
+});
+
 /************************************
 *  question 内容的html标签内容被转义
 *  现将转移内容重新改写成html标签

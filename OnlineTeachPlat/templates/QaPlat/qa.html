@@ -9,6 +9,8 @@
 				<br>
 				<div align="left">
 				<a id="button_publicQ"  class="btn btn-primary" role="button" href="{% url 'QaPlat:publicQ' %}" ><span class="glyphicon glyphicon glyphicon-edit"></span>发布问题</a>
+								<a id="button_T"  class="btn btn-primary" role="button" 
+								href="{% url 'oltp_admin:index' %}" ><span class="glyphicon glyphicon glyphicon-edit"></span>教学平台</a>
 				</div>
 
 				<div class="page-header" align="left">
@@ -22,14 +24,18 @@
 
 	  			<div>
 	  				{% for newQuestion in news %}
-		  				  <div class="new_questions" style="margin-bottom:20px">
+		  				  <div class="new_questions page-header" style="margin-bottom:20px">
 		  					<div class="new_questions_user" align="left">
-		  						<h4>{{newQuestion.username}}
-		  						创建于:{{newQuestion.date}}</h4>
+		  						<h4 style="display:inline" >{{newQuestion.username}}</h4>
+		  						<h5 style="display:inline">创建于:{{newQuestion.date}}</h5>
 		  					</div>
 		  					<div class="new_questions_title">
-		  						{# <h3>{{newQuestion.title}}</h3> #}
-		  						{{newQuestion.title}}
+		  						<form action="/QaPlat/oneQuestion/" method="post" name="postQaId" id={{newQuestion.id}} >
+			  						<h3><a href="#" for="postQaId" class="questionTilte">{{newQuestion.title}}</a></h3>
+			  						<input hidden="" name="questionId" id="qid_input" value={{newQuestion.id}} >
+			  						{# {{newQuestion.title}} #}
+		  						</form>
+		  						
 		  					</div>
 		  					<div class="new_questions_content">
 		  						  {{newQuestion.content}}

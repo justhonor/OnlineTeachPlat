@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content%}
+	<br> 
+	<ul class="nav nav-pills page-header">
+		  <li role="presentation" ><a href="#">朋友私信</a></li>
+		  <li role="presentation"><a href="#">系统通知</a></li>
+		  <button class="btn btn-primary navbar-right" id="sendMessage">发私信</button>
+	</ul>
+	<h3 align="left"> {{friendName.friendName}} </h3>
+	{% for myMsg in myMsgs %}
+		<div class="myMsg page-header">
+			<div name="createdate" align="left">
+					{{myMsg.create_date}} 
+			</div>
+
+			<div class="" name="content">
+				{{myMsg.content}}
+			</div>
+
+			<div align="left">
+					{{myMsg.has_read}} --- 未读:False 已读:True
+			</div>	
+		</div>
+	{% endfor %}
+{% endblock content%}

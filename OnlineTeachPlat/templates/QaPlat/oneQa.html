@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+
+{% block content%}
+			<div class="page-header" align="left">
+	  				<h3>主题</h3>
+	  		</div>
+				<div class="new_questions" style="margin:20px">
+		  					<div class="new_questions_title">
+		  						<form action="/QaPlat/oneQuestion/" method="post" name="postQaId" id={{news.id}} >
+			  						<h3><a href="#" for="postQaId" class="questionTilte">{{news.title}}</a></h3>
+			  						<input hidden="" name="questionId" id="qid_input" value={{news.id}} >
+			  						{# {{news.title}} #}
+		  						</form>
+		  						
+		  					</div>
+		  					<div class="new_questions_content">
+		  						  {{news.content}}
+		  					</div>
+		  			<br>
+		  			<div class="new_questions_user" align="right">
+		  				<h4 style="display:inline">{{news.username}}</h4>
+		  				<h5 style="display:inline">创建于:{{news.date}}</h5>
+		  			</div>
+		  			<div align="left">
+			  			<a href="#buttonComment"><button class="btn btn-primary"> 评论</button></a>
+			  			<button class="btn btn-primary" >关注</button> 
+		  			</div>
+		  		</div>
+		  	<div class="page-header" align="left">
+	  				<h4>评论区</h4>
+	  		</div>
+		  	<div class="comment">
+		  		{% for comment in comments %}
+		  			<div class="one_comment page-header"  style="margin-bottom:20px">
+				  		<div class="new_questions_content" id="one_comment_content">
+								{{comment.content}} 
+				  		</div>
+				  		<br>
+				  		<div class="one_comment_user" align="left">
+				  				<p style="display:inline" id="one_comment_user"> {{comment.commentUser}} </p>
+				  				<p style="display:inline" id="one_comment_date">创建于:{{comment.create_date}}</p> 
+				  		</div>
+				  	</div>	
+		  		{% endfor %}
+
+		  	</div>
+		  	<div id="summernote_comment" ></div>
+	    	<button class="btn btn-primary" id="buttonComment">提交</button>  
+	    	<button class="btn btn-primary" id="buttonCommentBack" onclick='javascrtpt:window.location.href="{% url 'QaPlat:qaPlat' %}"' >返回</button>  
+{% endblock content%}
