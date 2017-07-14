@@ -162,6 +162,7 @@ def qaPlat(request):
         newQuestion.setKey("date", qa.create_date)
         newQuestion.setKey("username", username)
         newQuestion.setKey("id", qa.id)
+        newQuestion.setKey("type","1")
         news.append(newQuestion)
 
     return render(request, "QaPlat/qa.html", {'news': news})
@@ -180,6 +181,7 @@ def oneQuestion(request):
     newQuestion.setKey("content", qa.content)
     newQuestion.setKey("date", qa.create_date)
     newQuestion.setKey("username", username)
+    newQuestion.setKey("type","1")
     newQuestion.setKey("id", qa.id)
 
     # 显示问题评论
@@ -192,6 +194,8 @@ def oneQuestion(request):
         comView.setKey("content",com.content)
         comView.setKey("create_date",com.create_date)
         comView.setKey("commentUser",commentUser)
+        comView.setKey("commentId",com.id)
+        comView.setKey("type","2")
         comt.append(comView)
 
 

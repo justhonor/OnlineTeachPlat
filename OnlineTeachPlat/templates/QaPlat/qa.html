@@ -33,12 +33,19 @@
 		  						<form action="/QaPlat/oneQuestion/" method="post" name="postQaId" id={{newQuestion.id}} >
 			  						<h3><a href="#" for="postQaId" class="questionTilte">{{newQuestion.title}}</a></h3>
 			  						<input hidden="" name="questionId" id="qid_input" value={{newQuestion.id}} >
+			  						<input hidden="" name="type"  value={{newQuestion.type}} >
 			  						{# {{newQuestion.title}} #}
 		  						</form>
 		  						
 		  					</div>
 		  					<div class="new_questions_content">
 		  						  {{newQuestion.content}}
+		  					</div>
+
+		  					<div class="glyphicon glyphicon-hand-right like "  align="right">
+		  					</div>
+		  					<span>1</span>
+		  					<div class="glyphicon glyphicon-thumbs-down dislike"  align="left">
 		  					</div>
 		  				  </div>
 	  			   {% endfor %}

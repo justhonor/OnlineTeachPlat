@@ -3,27 +3,44 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
+from LikeService import LikeService
+
+l = LikeService()
+
+l.like('69','1','3')
+l.disLike('69','3','1')
+
+
 # Create your tests here.
 # from QaPlat.SensitiveService import TrieNode
-from SensitiveService import  SensitiveService as SS
-import os 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# from SensitiveService import  SensitiveService as SS
+# import os 
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
+# import redis
 
-text='你好色 情吧'
-text='你好*色*情*我们吧'
-# c1 = "."
-# c2 = " "
-# c3 = "*"
-# c4 = "##"
+# r = redis.StrictRedis(host='localhost', port=6379, db=0)
+# r.set('foo', 'bar')
+# print r.get('foo')
 
-# cm  = [" ",".","*","#","你","n"]
-# text='你好赌博吧到沙发'
+# pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+# for i in range(1000):
+# 	r = redis.Redis(connection_pool=pool)
+# 	print i , r.get('foo')
+# text='你好色 情吧'
+# text='你好*色*情*我们吧'
+# # c1 = "."
+# # c2 = " "
+# # c3 = "*"
+# # c4 = "##"
 
-s = SS()
-print s.filter(text)
+# # cm  = [" ",".","*","#","你","n"]
+# # text='你好赌博吧到沙发'
+
+# s = SS()
+# print s.filter(text)
 # text
 # for uchar in cm:
 # 	# import pdb; pdb.set_trace()

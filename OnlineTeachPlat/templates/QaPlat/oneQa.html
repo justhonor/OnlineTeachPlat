@@ -40,8 +40,17 @@
 				  		<div class="one_comment_user" align="left">
 				  				<p style="display:inline" id="one_comment_user"> {{comment.commentUser}} </p>
 				  				<p style="display:inline" id="one_comment_date">创建于:{{comment.create_date}}</p> 
+				  								  	<div class="glyphicon glyphicon-hand-right" align="right">
+					</div>
+					<span>1</span>
+					<div class="glyphicon glyphicon-thumbs-down" align="left" actived>
+					</div>
+				  	</div>
 				  		</div>
-				  	</div>	
+				  		<input hidden="" name="commentId"  value={{comment.commentId}} >
+				  		<input hidden="" name="type"  value={{comment.type}} >
+
+
 		  		{% endfor %}
 
 		  	</div>
