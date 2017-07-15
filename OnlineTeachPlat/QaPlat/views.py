@@ -12,6 +12,8 @@ from QaPlat.models import Question, Comment,Message
 from QaPlat.SensitiveService import SensitiveService as Sservice
 
 from django.db import connection
+from LikeService import LikeService
+
 
 # 使用原生SQL
 def SQL(sql):
@@ -38,6 +40,25 @@ class viewObject(object):
 
     def getKey(self, key):
         return self.__getattribute__(key)
+
+# 赞踩服务
+# like:1 喜欢 -1 不喜欢
+@csrf_exempt
+def likeService(request):
+    entity_type  = request.POST.get("entity_type")
+    entity_id = request.POST.get("entity_id")
+    like = request.POST.get("like")
+    userId = request.user.id
+
+    # import pdb; pdb.set_trace()
+    l = LikeService()
+    if like == "1":
+        l.like(userId,entity_type,entity_id)
+    elif like == "-1":
+        l.disLike(userId,entity_type,entity_id)
+    counts = l.getLikecount(entity_type,entity_id)
+
+    return HttpResponse(content=counts)
 
 @csrf_exempt
 def message(request):
@@ -151,11 +172,14 @@ def qaPlat(request):
     # 显示最新问题
     questions = Question.objects.order_by('id').reverse()
 
+    # 喜欢改问题的人数
+    l = LikeService()
     news = []
     for qa in questions:
         if qa.title == "" or qa.user_id == "":
             continue
         username = User.objects.get(id=qa.user_id).username
+        counts=l.getLikecount("1",str(qa.id))
         newQuestion = viewObject()
         newQuestion.setKey("title", qa.title)
         newQuestion.setKey("content", qa.content)
@@ -163,6 +187,7 @@ def qaPlat(request):
         newQuestion.setKey("username", username)
         newQuestion.setKey("id", qa.id)
         newQuestion.setKey("type","1")
+        newQuestion.setKey("likeCount",counts)
         news.append(newQuestion)
 
     return render(request, "QaPlat/qa.html", {'news': news})
@@ -184,18 +209,22 @@ def oneQuestion(request):
     newQuestion.setKey("type","1")
     newQuestion.setKey("id", qa.id)
 
+    # 喜欢问题
+    l = LikeService()
     # 显示问题评论
     comt=[]
     comments = Comment.objects.filter(entity_id=qId)
     # import pdb; pdb.set_trace()
     for com in comments:
         comView = viewObject()
+        counts = l.getLikecount("2",str(com.id))
         commentUser = User.objects.get(id=com.user_id)
         comView.setKey("content",com.content)
         comView.setKey("create_date",com.create_date)
         comView.setKey("commentUser",commentUser)
         comView.setKey("commentId",com.id)
         comView.setKey("type","2")
+        comView.setKey("likeCount",counts)
         comt.append(comView)
 
 

@@ -1,6 +1,57 @@
 $(document).ready(function(){
 
 /************************************
+*     赞踩功能
+*     message.html --> views.message
+*     qa.html      --> views.
+**************************************/
+$(".dislike").click(function(e){
+	console.log(e)
+	// $(this).addClass("selected")
+	like = "-1"
+	entity_id = $(this).nextAll()[0].value
+	entity_type = $(this).nextAll()[1].value
+
+	data = {
+		like : like,
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	dislikeE = $(this)
+
+	$.post("/QaPlat/like/",data,function(data1,status){
+		dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	// window.location.reload()
+	});
+});
+
+$(".like").click(function(e){
+	console.log(e)
+	// $(this).addClass("selected")
+	like = "1"
+	entity_id = $(this).nextAll()[2].value
+	entity_type = $(this).nextAll()[3].value
+
+	data = {
+		like : like,
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	likeE = $(this)
+	$.post("/QaPlat/like/",data,function(data1,status){
+	// alert("评论:" + data1)
+	likeE.next()[0].innerText = data1
+	// window.history.back(-1)
+	// window.location.reload()
+
+	});
+});
+
+/************************************
 *     展现用户会话信息
 *     message.html --> views.message
 **************************************/
