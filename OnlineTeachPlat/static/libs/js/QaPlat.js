@@ -89,7 +89,9 @@ $(function (){ // 注意dialog需要外层function包裹
 
      	$.post("/QaPlat/message/",data,function(data1,status){
      		alert(data1)
-     		$(this).dialog("close");
+     		// $(this).dialog("close");
+     		window.location.reload()
+
      	})
 
      }

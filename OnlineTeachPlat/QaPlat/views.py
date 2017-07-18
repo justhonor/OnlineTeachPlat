@@ -117,7 +117,8 @@ def message(request):
     my = []
     myMsgs = Message.objects.filter(toid=request.user.id).order_by('id').reverse()
 
-    Sql = "select * from (select *  from QaPlat_message where toid='%s' order by id desc) as rever group by fromid;"%request.user.id 
+    # Sql = "select * from (select *  from QaPlat_message where toid='%s' order by id desc) as rever group by fromid;"%request.user.id 
+    Sql = "select *  from QaPlat_message where toid='69' group by fromid"
     # 
     results = SQL(Sql)
     # import pdb; pdb.set_trace()
