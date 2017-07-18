@@ -14,6 +14,11 @@ from QaPlat.SensitiveService import SensitiveService as Sservice
 from django.db import connection
 from LikeService import LikeService
 
+from async.Event import EventType,EventModle,eventProducer,eventComsumer,ComsumerThread
+
+# 开启异步事件处理线程
+t = ComsumerThread()
+t.start()
 
 # 使用原生SQL
 def SQL(sql):
@@ -30,7 +35,6 @@ def SQL(sql):
     return results
 
 
-
 # Create your views here.
 class viewObject(object):
     """前端显示所需数据集合"""
@@ -45,15 +49,29 @@ class viewObject(object):
 # like:1 喜欢 -1 不喜欢
 @csrf_exempt
 def likeService(request):
+
+
     entity_type  = request.POST.get("entity_type")
     entity_id = request.POST.get("entity_id")
     like = request.POST.get("like")
     userId = request.user.id
 
+    # 评论的实体ID type:1 问题 2评论 
+    if entity_type == "1": 
+        entityOwnerId = Question.objects.get(id=entity_id).user_id
+    elif entity_type == "2":
+        entityOwnerId = Comment.objects.get(id=entity_id).user_id
+
     # import pdb; pdb.set_trace()
     l = LikeService()
     if like == "1":
         l.like(userId,entity_type,entity_id)
+        # 触发异步事件
+        em =  EventModle()
+        em.setKey("TYPE","like").setKey("actorId",userId).setKey("entityType",entity_type)\
+        .setKey("entityId",entity_id).setKey("entityOwnerId",entityOwnerId)
+        producer = eventProducer()
+        producer.fireEvnet(em)
     elif like == "-1":
         l.disLike(userId,entity_type,entity_id)
     counts = l.getLikecount(entity_type,entity_id)
@@ -102,7 +120,7 @@ def message(request):
     Sql = "select * from (select *  from QaPlat_message where toid='%s' order by id desc) as rever group by fromid;"%request.user.id 
     # 
     results = SQL(Sql)
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     for re in results:
         msgView = viewObject()
         fromid = re[1]

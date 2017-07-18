@@ -5,93 +5,45 @@ from django.test import TestCase
 
 from LikeService import LikeService
 
-l = LikeService()
+from async.Event import EventType,EventModle,eventProducer,eventComsumer,workThread
 
-l.like('69','1','3')
-l.disLike('69','3','1')
+from Queue import Queue
+from threading import Thread as thread
+import os,time
+
+t = EventType()
+t.setVaule("like")
+
+a =  EventModle()
+a.setKey("TYPE",t.getValue()).setKey("actorId","123")\
+.setKey("entityType","1").setKey("entityId","798").setKey("entityOwnerId","159")
+print a.getKey("TYPE")
+
+b =  EventModle()
+b.setKey("TYPE","email").setKey("actorId","123")\
+.setKey("entityType","1").setKey("entityId","798").setKey("entityOwnerId","159")
+print b.getKey("TYPE")
 
 
-# Create your tests here.
-# from QaPlat.SensitiveService import TrieNode
-# from SensitiveService import  SensitiveService as SS
-# import os 
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+p = eventProducer()
 
-# import redis
-
-# r = redis.StrictRedis(host='localhost', port=6379, db=0)
-# r.set('foo', 'bar')
-# print r.get('foo')
-
-# pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-# for i in range(1000):
-# 	r = redis.Redis(connection_pool=pool)
-# 	print i , r.get('foo')
-# text='你好色 情吧'
-# text='你好*色*情*我们吧'
-# # c1 = "."
-# # c2 = " "
-# # c3 = "*"
-# # c4 = "##"
-
-# # cm  = [" ",".","*","#","你","n"]
-# # text='你好赌博吧到沙发'
-
-# s = SS()
-# print s.filter(text)
-# text
-# for uchar in cm:
-# 	# import pdb; pdb.set_trace()
-# 	print "type:%s uchar:%s ord:%s "%(type(uchar),uchar,ord(uchar))
-# 	s.isSymbol(uchar)
+t = workThread()
+t.start()
+i = 0
+while True:
+   
+    i = i + 1
+    print "test %s"%i
+    p.fireEvnet(b)
+    p.fireEvnet(a)
+    time.sleep(5)
 
 
 
+# c = eventComsumer()
+# c.get()
 
-# print s.filter(text)
-# nd = TrieNode()
-# root = TrieNode()
-# nd.Init(root)
-# print "this is root :",root.subNodes.items()
+# print m.getKey("TYPE")
+# print m.getKey("actorId")
+# print m.getKey("entityOwnerId")
 
-# f = open("Sensitive.txt",'r+')
-# words=f.readlines()
-# # 
-# i = 1 
-# for word in words:
-	
-# 	word.rstrip()
-# 	wDecode = word.decode('utf-8')
-	
-# 	import pdb; pdb.set_trace()
-# 	print wDecode
-# f.close()
-# 	# 汉字列表
-# 	start = 0
-# 	end = 0
-# 	hanzi = []
-# 	print "word:",word
-# 	while ( end < len(word)):
-# 		end = end +3
-# 		hanzi.append(word[start:end])
-# 		start = end
-# 		# import pdb; pdb.set_trace()	 
-# 	for i in hanzi: 
-# 		print i
-
-# 	# self.addWord(word.rstrip(),rootNode)
-# f.close()
-
-
-
-# class t(object):
-# 	"""docstring for t"""
-# 	def __init__(self):
-# 		super(t, self).__init__()
-
-# t1 = t()
-# print  "t1 id :%s"%id(t1)
-# t1 = t()
-# print  "t1 id :%s"%id(t1)
