@@ -1,6 +1,47 @@
 $(document).ready(function(){
 
 /************************************
+*     关注功能
+*     oneQa.html --> views.followS
+**************************************/
+$("#followId").click(function(e){
+	console.log(e)
+	entity_id = $("#qId_input")[0].value
+	entity_type = $("#qType_input")[0].value
+
+	data = {
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	$.post("/QaPlat/followS/",data,function(data1,status){
+		// dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	window.location.reload()
+	});
+
+})
+$("#unfollowId").click(function(e){
+	console.log(e)
+	entity_id = $("#qId_input")[0].value
+	entity_type = $("#qType_input")[0].value
+
+	data = {
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	$.post("/QaPlat/unfollowS/",data,function(data1,status){
+		// dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	window.location.reload()
+	});
+
+})
+
+/************************************
 *     赞踩功能
 *     message.html --> views.message
 *     qa.html      --> views.

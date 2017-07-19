@@ -14,5 +14,8 @@ urlpatterns = (
 	url(r'^oneQuestion/',views.oneQuestion,name='oneQuestion'),
 	url(r'^commentSubmit/',views.commentSubmit,name='commentSubmit'),
 	url(r'^message/',views.message,name='message'),
+	url(r'^profile/',views.profile,name='profile'),
+	url(r'^followS/',views.followS,name='followS'),
+	url(r'^unfollowS/',views.unfollowS,name='unfollowS'),
 )
 

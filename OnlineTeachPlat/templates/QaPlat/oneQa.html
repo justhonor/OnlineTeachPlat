@@ -9,7 +9,8 @@
 		  					<div class="new_questions_title">
 		  						<form action="/QaPlat/oneQuestion/" method="post" name="postQaId" id={{news.id}} >
 			  						<h3><a href="#" for="postQaId" class="questionTilte">{{news.title}}</a></h3>
-			  						<input hidden="" name="questionId" id="qid_input" value={{news.id}} >
+			  						<input hidden="" name="questionId" id="qId_input" value={{news.id}} >
+			  						<input type="hidden" name="questionType" id="qType_input" value="1">
 			  						{# {{news.title}} #}
 		  						</form>
 		  						
@@ -24,7 +25,9 @@
 		  			</div>
 		  			<div align="left">
 			  			<a href="#buttonComment"><button class="btn btn-primary"> 评论</button></a>
-			  			<button class="btn btn-primary" >关注</button> 
+			  			<button class="btn btn-primary" id="followId" >关注</button>
+			  			<button class="btn btn-primary" id="unfollowId" >取消关注</button>
+			  			{{news.IsFollow}}
 		  			</div>
 		  		</div>
 		  	<div class="page-header" align="left">

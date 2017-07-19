@@ -1,25 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from RedisOps import RedisSet
-
-class RedisKeyutil(object):
-    """docstring for RedisKeyutil"""
-
-    def __init__(self):
-        super(RedisKeyutil, self).__init__()
-
-    split = "_"
-    # 业务名称
-    BIZ_LIKE = "LIKE"
-    BIZ_DISLIKE = "DISLIKE"
-
-    # 业务LIKE
-    def getLikeKey(self, entityType, entityId):
-        return self.BIZ_LIKE + self.split + entityType + entityId
-
-    # 业务DISLIKE
-    def getDisLikeKey(self, entityType, entityId):
-        return self.BIZ_DISLIKE + self.split + entityType + entityId
+from RedisOps import RedisSet,RedisKeyutil
 
 class LikeService(object):
     """docstring for LikeService"""

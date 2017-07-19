@@ -101,7 +101,9 @@ def dolikeHandler(em):
 			conversation_id="%s%s"%(toid,fromid)
 		# import pdb; pdb.set_trace()
 		try:
-			print("message create fromid:%s toid:%s content:%s conid:%s")%(fromid,toid,content,conversation_id)
+			# print("message create fromid:%s toid:%s content:%s conid:%s")%(fromid,toid,content,conversation_id)
+			# 插入记录的时候注意每个字段的类型,似乎类型不正确也能插入,但在查找的时候报错.
+			# mysql当中不知是否也是这种情况
 			msg = Message.objects.create(fromid=fromid,toid=toid,content=content,conversation_id=conversation_id)
 		except Exception as e:
 			print e
@@ -140,9 +142,4 @@ class ComsumerThread(thread):
 					emailHandler().doHandler()
 				else:
 					print "没有发现处理函数"
-			time.sleep(1)
-
-
-		
-
-		
+			# time.sleep(1)

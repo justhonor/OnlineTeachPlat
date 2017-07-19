@@ -16,9 +16,18 @@ from LikeService import LikeService
 
 from async.Event import EventType,EventModle,eventProducer,eventComsumer,ComsumerThread
 
+from followService import FollowService as Fs
+
+
 # 开启异步事件处理线程
 t = ComsumerThread()
 t.start()
+
+entityType={
+    "question":'1',
+    "comment":'2',
+    "user":'3'
+}
 
 # 使用原生SQL
 def SQL(sql):
@@ -44,6 +53,38 @@ class viewObject(object):
 
     def getKey(self, key):
         return self.__getattribute__(key)
+
+@csrf_exempt
+def profile(request):
+    return render(request,"QaPlat/profile.html")
+
+# 取消关注业务
+@csrf_exempt
+def unfollowS(request):
+    entity_type  = request.POST.get("entity_type")
+    entity_id = request.POST.get("entity_id")
+    userId = str(request.user.id)
+    # import pdb; pdb.set_trace()
+    if entity_type is None or entity_id is None:
+        return HttpResponse("wrong request \n type or id is None")
+    else:
+        fs = Fs()
+        fs.unfollow(entity_type,entity_id,userId)
+        return HttpResponse(content="d1")   
+
+# 关注业务
+@csrf_exempt
+def followS(request):
+    entity_type  = request.POST.get("entity_type")
+    entity_id = request.POST.get("entity_id")
+    userId = str(request.user.id)
+    # import pdb; pdb.set_trace()
+    if entity_type is None or entity_id is None:
+        return HttpResponse("wrong request \n type or id is None")
+    else:
+        fs = Fs()
+        fs.follow(entity_type,entity_id,userId)
+        return HttpResponse(content="d1")   
 
 # 赞踩服务
 # like:1 喜欢 -1 不喜欢
@@ -228,6 +269,11 @@ def oneQuestion(request):
     newQuestion.setKey("type","1")
     newQuestion.setKey("id", qa.id)
 
+    # 是否已关注
+    fs = Fs()
+    # import pdb; pdb.set_trace()
+    IsFollow=fs.isFollower(entityType["question"],qId,qa.user_id)
+    newQuestion.setKey("IsFollow",IsFollow)
     # 喜欢问题
     l = LikeService()
     # 显示问题评论
