@@ -56,6 +56,30 @@ class viewObject(object):
 
 @csrf_exempt
 def profile(request):
+    # 关注列表和粉丝类表给template
+    entity_type = entityType["user"]
+    entity_id = str(request.user.id)
+    # 所有列表
+    offset = 0 
+    count = -1
+    fs = Fs()
+
+    followee=fs.getFollowees(entity_type,entity_id,offset,count)
+    follower=fs.getFollowers(entity_type,entity_id,offset,count)
+    # 可以关注问题,评论,用户
+    for fee in followee:
+        entityTypeId=fee.split("_")
+        if entityTypeId[0] == "1":
+            print  "关注问题"
+        elif entityTypeId[0] == "2":
+            print  "关注评论"
+        elif entityTypeId[0] == "3":
+            print  "关注用户"
+
+    # 粉丝是用户
+    for fer in follower:
+        print "粉丝:",fer
+
     return render(request,"QaPlat/profile.html")
 
 # 取消关注业务
@@ -71,6 +95,8 @@ def unfollowS(request):
         fs = Fs()
         fs.unfollow(entity_type,entity_id,userId)
         return HttpResponse(content="d1")   
+# followerKey:FOLLOWER_110 enType:1 enId:10 uId:57 uType:3
+# followeeKey:FOLLOWEE_573 enType:1 enId:10 uId:57 uType:3
 
 # 关注业务
 @csrf_exempt
@@ -78,7 +104,7 @@ def followS(request):
     entity_type  = request.POST.get("entity_type")
     entity_id = request.POST.get("entity_id")
     userId = str(request.user.id)
-    # import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
     if entity_type is None or entity_id is None:
         return HttpResponse("wrong request \n type or id is None")
     else:
@@ -272,8 +298,9 @@ def oneQuestion(request):
     # 是否已关注
     fs = Fs()
     # import pdb; pdb.set_trace()
-    IsFollow=fs.isFollower(entityType["question"],qId,qa.user_id)
+    IsFollow=fs.isFollower(entityType["question"],qId,request.user.id)
     newQuestion.setKey("IsFollow",IsFollow)
+
     # 喜欢问题
     l = LikeService()
     # 显示问题评论

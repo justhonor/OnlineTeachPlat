@@ -25,7 +25,7 @@ class RedisKeyutil(object):
 
     # 实体的关注列表
     def getFolloweeKey(self,entityType,entityId):
-        return self.BIZ_FOLLOWER + self.split + entityType + entityId
+        return self.BIZ_FOLLOWEE + self.split + entityType + entityId
 
     # 实体的粉丝列表
     def getFollowerKey(self,entityType,entityId):

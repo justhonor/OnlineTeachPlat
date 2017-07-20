@@ -11,16 +11,18 @@ class FollowService(object):
 	def follow(self,entityType,entityId,userId,userType='3'):
 		# 实体的粉丝列表
 		followerKey = RedisKeyutil.getFollowerKey(entityType,entityId)
-		# print "followerKey:%s enType:%s enId:%s uId:%s uType:%s"%(followerKey,entityType,entityId,userId,userType)
+		print "followerKey:%s enType:%s enId:%s uId:%s uType:%s"%(followerKey,entityType,entityId,userId,userType)
+
 		# 用户的关注列表,定义userType:3
 		followeeKey = RedisKeyutil.getFolloweeKey(userId,userType)
+		print "followeeKey:%s enType:%s enId:%s uId:%s uType:%s"%(followeeKey,entityType,entityId,userId,userType)
 
 		date = int(datetime.date.today().strftime("%Y%m%d"))
-
+		import pdb; pdb.set_trace()
 		try:
-			instance = entityType + entityId
+			split = "_"
+			instance = entityType + split + entityId
 			rz = RedisZset()
-			# import pdb; pdb.set_trace()
 			rz.zadd(followerKey,date,userId)
 			rz.zadd(followeeKey,date,instance)
 			return True
@@ -33,7 +35,8 @@ class FollowService(object):
 		followeeKey = RedisKeyutil.getFolloweeKey(userId,userType)
 		# import pdb; pdb.set_trace()
 		try:
-			instance = entityType + entityId
+			split = "_"
+			instance = entityType + split + entityId
 			rz = RedisZset()
 			rz.zrem(followerKey,userId)
 			rz.zrem(followeeKey,instance)
@@ -42,6 +45,7 @@ class FollowService(object):
 			print e
 			return False
 
+	# 实体对象的粉丝
 	def getFollowers(self,entityType,entityId,offset,count):
 		followerKey = RedisKeyutil.getFollowerKey(entityType,entityId)
 		try:
@@ -51,6 +55,7 @@ class FollowService(object):
 			print e
 			return False
 
+	# 实体对象的关注列表
 	def getFollowees(self,entityType,entityId,offset,count):
 		followeeKey = RedisKeyutil.getFollowerKey(entityType,entityId)
 		try:
