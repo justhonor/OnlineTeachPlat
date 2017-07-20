@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render,render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +17,7 @@ from LikeService import LikeService
 from async.Event import EventType,EventModle,eventProducer,eventComsumer,ComsumerThread
 
 from followService import FollowService as Fs
-
+import datetime
 
 # 开启异步事件处理线程
 t = ComsumerThread()
@@ -55,6 +55,32 @@ class viewObject(object):
         return self.__getattribute__(key)
 
 @csrf_exempt
+def own(request):
+    return render(request,"QaPlat/person.html")
+
+
+@csrf_exempt
+def person(request):
+    print "========================================"
+    # return HttpResponseRedirect('own')
+    # import pdb; pdb.set_trace()
+    userId = request.path.encode().split('/')[-2]
+
+    
+    InfoView = viewObject()
+    InfoView.setKey("groupName",User.objects.get(id=userId).group_name)
+    InfoView.setKey("userName",User.objects.get(id=userId).username)
+    InfoView.setKey("userId",userId)
+    InfoView.setKey("email",User.objects.get(id=userId).email)
+
+    fs = Fs()
+    IsFollow=fs.isFollower(entityType["user"],userId,request.user.id)
+    InfoView.setKey("IsFollow",IsFollow)
+    print "isfollow:",InfoView.IsFollow
+
+    return render(request,"QaPlat/person.html",{"userInfo":InfoView})
+
+@csrf_exempt
 def profile(request):
     # 关注列表和粉丝类表给template
     entity_type = entityType["user"]
@@ -63,24 +89,57 @@ def profile(request):
     offset = 0 
     count = -1
     fs = Fs()
-
     followee=fs.getFollowees(entity_type,entity_id,offset,count)
     follower=fs.getFollowers(entity_type,entity_id,offset,count)
+
     # 可以关注问题,评论,用户
+    fv = []
     for fee in followee:
+        # entityTypeId[0]-->type  entityTypeId[1]-->id
         entityTypeId=fee.split("_")
         if entityTypeId[0] == "1":
-            print  "关注问题"
+            entity_type = entityTypeId[0]
+            followerType = "关注问题"
+            # print  "关注问题"
+            # import pdb; pdb.set_trace()
+            followerId = entityTypeId[1]
+            title = Question.objects.get(id=int(entityTypeId[1])).title
+            user_id = Question.objects.get(id=int(entityTypeId[1])).user_id
+            username = User.objects.get(id=user_id).username
+            # print "标题:%s 作者:%s "%(title,username)
         elif entityTypeId[0] == "2":
-            print  "关注评论"
+            entity_type = entityTypeId[0]
+            followerType = "关注评论"
+            followerId = entityTypeId[1]
+            title = ""
+            user_id = Comment.objects.get(id=int(entityTypeId[1])).user_id
+            username = User.objects.get(id=user_id).username
+            # print  "关注评论"
         elif entityTypeId[0] == "3":
-            print  "关注用户"
+            entity_type = entityTypeId[0]
+            followerType = "关注用户"
+            followerId = entityTypeId[1]
+            title = ""
+            username = User.objects.get(id=int(entityTypeId[1])).username
+            # print  "关注用户"
+        followeeView = viewObject()
+        followeeView.setKey("followerType",followerType)
+        followeeView.setKey("entityeType",entity_type)
+        followeeView.setKey("followerId",followerId)
+        followeeView.setKey("title",title)
+        followeeView.setKey("username",username)
+        fv.append(followeeView)
 
     # 粉丝是用户
+    fl =[]
     for fer in follower:
-        print "粉丝:",fer
+        followerView=viewObject()
+        followerView.setKey("userId",fer)
+        followerView.setKey("username",User.objects.get(id=fer).username)
+        # print "粉丝id:%s name:%s"%(followerView.username,followerView.userId)
+        fl.append(followerView)
 
-    return render(request,"QaPlat/profile.html")
+    return render(request,"QaPlat/profile.html",{"followees":fv,"followers":fl,"onwerName":request.user.username})
 
 # 取消关注业务
 @csrf_exempt
@@ -104,7 +163,7 @@ def followS(request):
     entity_type  = request.POST.get("entity_type")
     entity_id = request.POST.get("entity_id")
     userId = str(request.user.id)
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     if entity_type is None or entity_id is None:
         return HttpResponse("wrong request \n type or id is None")
     else:
@@ -223,6 +282,7 @@ def publicQ(request):
     if request.method == 'POST':
         # public question
         if request.POST.get('type') == "public":
+            # import pdb; pdb.set_trace()
             status, log = publicS(request)
             if status:
                 return HttpResponse(content="success")
@@ -240,13 +300,13 @@ def publicS(request):
     try:
         # 敏感词过滤
         Sensitive = Sservice()
-        # import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         title = Sensitive.filter(request.POST.get('title'))
         content = Sensitive.filter(request.POST.get('content'))
         # title = request.POST.get('title')
         # content = request.POST.get("content")
         userId = request.user.id
-        # import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         question = Question.objects.create(
             title=title, content=content, user_id=userId)
         return True, "success"
@@ -255,11 +315,47 @@ def publicS(request):
 
 
 def qaPlat(request):
+
+    # 我关注的问题
+    # 关注列表和粉丝类表给template
+    entity_type = entityType["user"]
+    entity_id = str(request.user.id)
+    # 所有列表
+    offset = 0 
+    count = -1
+    fs = Fs()
+    followee=fs.getFollowees(entity_type,entity_id,offset,count)
+
+    # 可以关注问题,评论,用户
+    fv = []
+    for fee in followee:
+        # entityTypeId[0]-->type  entityTypeId[1]-->id
+        entityTypeId=fee.split("_")
+        if entityTypeId[0] == "1":
+            entity_type = entityTypeId[0]
+            followerType = "关注问题"
+            # print  "关注问题"
+            # import pdb; pdb.set_trace()
+            followerId = entityTypeId[1]
+            title = Question.objects.get(id=int(entityTypeId[1])).title
+            user_id = Question.objects.get(id=int(entityTypeId[1])).user_id
+            username = User.objects.get(id=user_id).username
+            # print "标题:%s 作者:%s "%(title,username)
+        else:
+            continue
+        followeeView = viewObject()
+        followeeView.setKey("followerType",followerType)
+        followeeView.setKey("entityeType",entity_type)
+        followeeView.setKey("followerId",followerId)
+        followeeView.setKey("title",title)
+        followeeView.setKey("username",username)
+        fv.append(followeeView)    
+
+    # 喜欢该问题的人数
+    l = LikeService()
+
     # 显示最新问题
     questions = Question.objects.order_by('id').reverse()
-
-    # 喜欢改问题的人数
-    l = LikeService()
     news = []
     for qa in questions:
         if qa.title == "" or qa.user_id == "":
@@ -271,19 +367,27 @@ def qaPlat(request):
         newQuestion.setKey("content", qa.content)
         newQuestion.setKey("date", qa.create_date)
         newQuestion.setKey("username", username)
+        newQuestion.setKey("userId",qa.user_id)
         newQuestion.setKey("id", qa.id)
         newQuestion.setKey("type","1")
         newQuestion.setKey("likeCount",counts)
         news.append(newQuestion)
-
-    return render(request, "QaPlat/qa.html", {'news': news})
+    # print news[0].title,news[0].content
+    return render(request, "QaPlat/qa.html", {'news': news,"followerQa":fv})
 
 
 @csrf_exempt
 def oneQuestion(request):
 
+
     # 显示该问题
-    qId = request.POST.get("questionId")
+    # import pdb; pdb.set_trace()
+    if request.method == "POST":
+        qId = request.POST.get("questionId")
+    # 用于我关注的问题
+    elif request.method == "GET":
+        qId = request.path.encode().split('/')[-2]
+        
     qa = Question.objects.get(id=qId)
     # import pdb; pdb.set_trace()
     username = User.objects.get(id=qa.user_id).username
@@ -292,6 +396,7 @@ def oneQuestion(request):
     newQuestion.setKey("content", qa.content)
     newQuestion.setKey("date", qa.create_date)
     newQuestion.setKey("username", username)
+    newQuestion.setKey("userId",qa.user_id)
     newQuestion.setKey("type","1")
     newQuestion.setKey("id", qa.id)
 
@@ -314,6 +419,7 @@ def oneQuestion(request):
         comView.setKey("content",com.content)
         comView.setKey("create_date",com.create_date)
         comView.setKey("commentUser",commentUser)
+        comView.setKey("commentUserId",com.user_id)
         comView.setKey("commentId",com.id)
         comView.setKey("type","2")
         comView.setKey("likeCount",counts)

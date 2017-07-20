@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block content%}
 				<div class="page-header">
 	  				<h1>问答平台</h1>
@@ -15,6 +14,15 @@
 
 				<div class="page-header" align="left">
 	  				<h4>我关注的问题</h4>
+	  				{% for fqa  in followerQa %}
+	  					<div>
+	  						<h3 align="center"><a href="/QaPlat/oneQuestion/{{fqa.followerId}}/" >{{fqa.title}}</a></h3>
+	  					</div>
+	  					<div align="right">
+	  						<h5>作者:{{fqa.username}}</h5>
+	  					</div>
+	  				{% endfor %}
+
 				</div>
 				<br>
 				<br>
@@ -26,7 +34,7 @@
 	  				{% for newQuestion in news %}
 		  				  <div class="new_questions page-header" style="margin-bottom:20px">
 		  					<div class="new_questions_user" align="left">
-		  						<h4 style="display:inline" >{{newQuestion.username}}</h4>
+		  						<h4 class="username" style="display:inline" ><a href="/QaPlat/person/{{newQuestion.userId}}/">{{newQuestion.username}}</a></h4>
 		  						<h5 style="display:inline">创建于:{{newQuestion.date}}</h5>
 		  					</div>
 		  					<div class="new_questions_title">

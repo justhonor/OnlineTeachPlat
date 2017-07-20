@@ -33,7 +33,7 @@ class RedisKeyutil(object):
 
     # 业务LIKE
     def getLikeKey(self, entityType, entityId):
-        print "get the like key"
+        # print "get the like key"
         return self.BIZ_LIKE + self.split + entityType + entityId
 
     # 业务DISLIKE

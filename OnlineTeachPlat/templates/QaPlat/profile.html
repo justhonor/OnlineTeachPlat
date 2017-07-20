@@ -2,32 +2,48 @@
 
 {% block content%}
 	<br> 
+	<h2>欢迎{{onwerName}} 光临</h2>
 	<ul class="nav nav-pills page-header">
-		  <li role="presentation" ><a href="#">关注列表</a></li>
-		  <li role="presentation"><a href="#">粉丝列表</a></li>
-		  <button class="btn btn-primary navbar-right" id="sendMessage">发私信</button>
+		  <li role="presentation" ><a href="#" id="profile_followee_b" class="selected">关注列表</a></li>
+		  <li role="presentation"><a href="#" id="profile_follower_b">粉丝列表</a></li>
 	</ul>
-	
-	{% for myMsg in myMsgs %}
+
+	<div id="profile_follower" class="hidden">
+	<h2 class="page-header" align="left">粉丝列表</h2>
+	{% for follower in followers %}
 		<div class="myMsg page-header">
-
-			<div name="friendName" align="left">
-				<form method="post" action="/QaPlat/message/" id={{myMsg.fromid}} name={{myMsg.fromid}}>
-					<a href="#" class="friendId_sub" for={{myMsg.fromid}}>{{myMsg.friendName}}</a> {{myMsg.createdate}} 
-					<input type="hidden" name="friendId" value={{myMsg.fromid}} >
-					<input type="hidden" name="type" value="conversationMsg">
-				</form>
-				
-			</div>
-
-			<div class="" name="content">
-				{{myMsg.content}}
-			</div>
 			<div align="left">
-					{{myMsg.hasRead}}
-			</div>
-			
+				<h3> 粉丝:{{follower.username}}</h3> 
+				<br>
+				<h5> ID:{{follower.userId}}</h5>
+			</div>				
 		</div>
 	{% endfor %}
+	</div>
+
+	<div id="profile_followee" >
+	<h2 class="page-header" align="left">关注列表</h2>
+	{% for followee in followees %}
+		<div class="myMsg page-header">
+			<div align="left">
+				<span> {{followee.followerType}}</span> 
+				<span hidden="">{{followee.entityeType}}</span>
+				<span> {{followee.followerId}}</span>
+
+			</div>
+			<div>
+				<p>{{followee.title}}</p>
+			</div>
+			<div align="left" class="nav nav-pills">
+				<a class="username" href="/QaPlat/person/{{followee.followerId}}/" >{{followee.username}}</a>
+				{# {{followee.username}} #}
+				<button class="btn btn-primary navbar-right unfollowP" >取消关注</button>
+			</div>
+					
+		</div>
+			
+	{% endfor %}
+	</div>
+
 
 {% endblock content %}

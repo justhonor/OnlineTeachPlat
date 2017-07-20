@@ -1,9 +1,75 @@
 $(document).ready(function(){
+/************************************
+*     显示关注列表/粉丝列表
+**************************************/
+// 粉丝列表
+$("#profile_follower_b").click(function(e){
+	console.log(e)
+	$(this).addClass("selected")
+	$("#profile_follower").removeClass("hidden")
+
+
+	$("#profile_followee_b").removeClass("selected")
+	$("#profile_followee").addClass("hidden")
+
+})
+
+// 关注列表
+$("#profile_followee_b").click(function(e){
+	console.log(e)
+	$(this).addClass("selected")
+	$("#profile_followee").removeClass("hidden")
+
+	$("#profile_follower_b").removeClass("selected")
+	$("#profile_follower").addClass("hidden")
+
+})
+
 
 /************************************
 *     关注功能
+*     person.html --> views.foolowS
 *     oneQa.html --> views.followS
+*     profile.html --> views.unfollowS
 **************************************/
+$("#person_follow").click(function(e){
+	console.log(e)
+	entity_id = document.getElementById("person_userId").innerText
+	entity_type = "3"
+
+	data = {
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	$.post("/QaPlat/followS/",data,function(data1,status){
+		// dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	window.location.reload()
+	});
+
+})
+
+$("#person_unFollow").click(function(e){
+	console.log(e)
+	entity_id = document.getElementById("person_userId").innerText
+	entity_type = "3"
+
+	data = {
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	$.post("/QaPlat/unfollowS/",data,function(data1,status){
+		// dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	window.location.reload()
+	});
+
+})
+
 $("#followId").click(function(e){
 	console.log(e)
 	entity_id = $("#qId_input")[0].value
@@ -26,6 +92,26 @@ $("#unfollowId").click(function(e){
 	console.log(e)
 	entity_id = $("#qId_input")[0].value
 	entity_type = $("#qType_input")[0].value
+
+	data = {
+		entity_type : entity_type,
+		entity_id : entity_id,
+	}
+
+	$.post("/QaPlat/unfollowS/",data,function(data1,status){
+		// dislikeE.prevAll()[0].innerText = data1
+	// alert("评论:" + data1)
+	// window.history.back(-1)
+	window.location.reload()
+	});
+
+})
+
+// profile.html --> button
+$(".unfollowP").click(function(e){
+	console.log(e)
+	entity_id = $(this).parent().prevAll()[1].children[2].innerText
+	entity_type = $(this).parent().prevAll()[1].children[1].innerText
 
 	data = {
 		entity_type : entity_type,
@@ -178,7 +264,7 @@ $(function (){ // 注意dialog需要外层function包裹
 **************************************/
 $("#buttonComment").click(function(e){
 	entity_type = 1
-	entity_id = document.getElementById("qid_input").value
+	entity_id = document.getElementById("qId_input").value
 	comment = $("#summernote_comment").summernote('code')
 
 	data = {

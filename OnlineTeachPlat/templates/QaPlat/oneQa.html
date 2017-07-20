@@ -20,7 +20,7 @@
 		  					</div>
 		  			<br>
 		  			<div class="new_questions_user" align="right">
-		  				<h4 style="display:inline">{{news.username}}</h4>
+		  				<h4  style="display:inline"><a href="/QaPlat/person/{{news.userId}}/">{{news.username}}</a></h4>
 		  				<h5 style="display:inline">创建于:{{news.date}}</h5>
 		  			</div>
 		  			<div align="left">
@@ -41,7 +41,7 @@
 				  		</div>
 				  		<br>
 				  		<div class="one_comment_user" align="left">
-				  				<p style="display:inline" id="one_comment_user"> {{comment.commentUser}} </p>
+				  				<p class="username" style="display:inline" id="one_comment_user"><a href="/QaPlat/person/{{comment.commentUserId}}/">{{comment.commentUser}}</a>  </p>
 				  				<p style="display:inline" id="one_comment_date">创建于:{{comment.create_date}}</p> 
 				  		<div class="glyphicon glyphicon-hand-right like" align="right"></div>
 						<span>{{comment.likeCount}}</span>

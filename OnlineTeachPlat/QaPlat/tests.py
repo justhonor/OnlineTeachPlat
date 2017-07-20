@@ -17,9 +17,9 @@ r =  RedisZset()
 r.zadd("a1",1,"m1")
 r.zadd("a1",2,"m2")
 r.zadd("a1",-1,"m3")
-print r.zrange("a1",0,-1)
+print r.zrange("a1",0,-1,withscores)
 
-print r.zscore("a1",'m') != None
+
 
 # t = EventType()
 # t.setVaule("like")

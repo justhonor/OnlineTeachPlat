@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content%}
+	<br> 
+	<ul class="nav nav-pills page-header">
+		  <h3>{{userInfo.userName}} 的个人信息</h3>
+		  是否已经关注:{{userInfo.IsFollow}}
+		  <button class="btn btn-primary navbar-right " id="person_follow">关注</button>
+		  <h3 hidden="" id="person_userId">{{userInfo.userId}}</h3>
+		  <button class="btn btn-primary navbar-right " id="person_unFollow">取消关注</button>
+	</ul>
+	<div>
+
+		<h5>组名:{{userInfo.groupName}}</h5>
+		<h5>邮箱:{{userInfo.email}}</h5>
+	</div>
+{% endblock content%}

@@ -14,11 +14,11 @@ class FollowService(object):
 		print "followerKey:%s enType:%s enId:%s uId:%s uType:%s"%(followerKey,entityType,entityId,userId,userType)
 
 		# 用户的关注列表,定义userType:3
-		followeeKey = RedisKeyutil.getFolloweeKey(userId,userType)
+		followeeKey = RedisKeyutil.getFolloweeKey(userType,userId)
 		print "followeeKey:%s enType:%s enId:%s uId:%s uType:%s"%(followeeKey,entityType,entityId,userId,userType)
 
 		date = int(datetime.date.today().strftime("%Y%m%d"))
-		import pdb; pdb.set_trace()
+		# import pdb; pdb.set_trace()
 		try:
 			split = "_"
 			instance = entityType + split + entityId
@@ -32,7 +32,7 @@ class FollowService(object):
 
 	def unfollow(self,entityType,entityId,userId,userType='3'):
 		followerKey = RedisKeyutil.getFollowerKey(entityType,entityId)
-		followeeKey = RedisKeyutil.getFolloweeKey(userId,userType)
+		followeeKey = RedisKeyutil.getFolloweeKey(userType,userId)
 		# import pdb; pdb.set_trace()
 		try:
 			split = "_"
@@ -48,6 +48,7 @@ class FollowService(object):
 	# 实体对象的粉丝
 	def getFollowers(self,entityType,entityId,offset,count):
 		followerKey = RedisKeyutil.getFollowerKey(entityType,entityId)
+		print "getFollowers--followerKey:",followerKey
 		try:
 			rz = RedisZset()
 			return rz.zrevrange(followerKey,offset,count)
@@ -57,7 +58,8 @@ class FollowService(object):
 
 	# 实体对象的关注列表
 	def getFollowees(self,entityType,entityId,offset,count):
-		followeeKey = RedisKeyutil.getFollowerKey(entityType,entityId)
+		followeeKey = RedisKeyutil.getFolloweeKey(entityType,entityId)
+		print "getFollowees--followeeKey:",followeeKey
 		try:
 			rz = RedisZset()
 			return rz.zrevrange(followeeKey,offset,count)
