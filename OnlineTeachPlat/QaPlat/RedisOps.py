@@ -23,6 +23,19 @@ class RedisKeyutil(object):
     BIZ_FOLLOWER = "FOLLOWER"
     BIZ_FOLLOWEE = "FOLLOWEE"
 
+    BIZ_RANK_INFLUENCE_FACTOR = "RankInfFactor"
+    BIZ_RANK = "RANK"
+
+    # 每个问题影响因素--使用哈希
+    def getRankInfluencesKey(self,rankType,rankId):
+        return self.BIZ_RANK_INFLUENCE_FACTOR + self.split + rankType + rankId
+
+    # rankType: 1问题排名 
+    # 使用有序集
+    def getRankKey(self,rankType):
+        return self.BIZ_RANK + self.split + rankType
+
+
     # 实体的关注列表
     def getFolloweeKey(self,entityType,entityId):
         return self.BIZ_FOLLOWEE + self.split + entityType + entityId
@@ -47,7 +60,9 @@ class RedisZset(object):
         self.r = rds
 
     def zadd(self,key,score,member):
+
         try:
+            # 注意redis.py 实现zadd 的参数于redis 本身zadd 位置不同
             self.r.zadd(key,member,score)
             return True
         except Exception as e:
@@ -98,6 +113,78 @@ class RedisZset(object):
             print e
             return False   
 
+class RedisHash(object):
+    """docstring for Redis"""
+    def __init__(self,rds=redis.Redis(connection_pool=pool)):
+        super(RedisHash, self).__init__()
+        self.r = rds
+
+    def hset(self,key,field,value):
+        try:
+            self.r.hset(key,field,value)
+            return True
+        except Exception as e:
+            print e
+            return False
+
+    def hget(self,key,field):
+        try:
+            return self.r.hget(key,field)
+        except Exception as e:
+            print e
+            return False
+
+    def hdel(self,key,field):
+        try:
+            self.r.hdel(key,field)
+            return True
+        except Exception as e:
+            print e
+            return False
+
+    def hincrby(self,key,field,count):
+        try:
+            self.r.hincrby(key,field,count)
+            return True
+        except Exception as e:
+            print e
+            return False
+
+    def hvals(self,key):
+        try:
+            return self.r.hvals(key)
+        except Exception as e:
+            print e
+            return False
+
+    # values是一个字典
+    def hmset(self,key,values):
+        """
+            values是一个字典
+        """
+        try:
+            self.r.hmset(key,values)
+            return True
+        except Exception as e:
+            print e
+            return False
+
+    def hmget(self,key,fields):
+        """
+            fields 是一个列表
+        """
+        try:
+            return self.r.hmget(key,fields)
+        except Exception as e:
+            print e
+            return False
+
+    def hkeys(self,key):
+        try:
+            return self.r.hkeys(key)
+        except Exception as e:
+            print e
+            return False
 
 class RedisSet(object):
     """docstring for RedisSet"""

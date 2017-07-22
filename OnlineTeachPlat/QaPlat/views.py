@@ -18,6 +18,7 @@ from async.Event import EventType,EventModle,eventProducer,eventComsumer,Comsume
 
 from followService import FollowService as Fs
 import datetime
+from RankService import RankService
 
 # 开启异步事件处理线程
 t = ComsumerThread()
@@ -28,6 +29,13 @@ entityType={
     "comment":'2',
     "user":'3'
 }
+
+rankType ={
+    # RankService.py 中使用到,作用范围未使用LEGB 的B 因此不可改 
+    "question":"QuestionRank"
+}
+
+
 
 # 使用原生SQL
 def SQL(sql):
@@ -297,19 +305,40 @@ def publicQ(request):
 
 def publicS(request):
     # import pdb; pdb.set_trace()
+
+    # 初始值
+    QuestionFactors = {
+         "Qviews":'1',
+         "Qanswer":"0",
+         "Qscore":'1',
+         "sumAscores":'0',
+         "QageInHours":'1',
+         "Qupdated":'0',
+    }
     try:
         # 敏感词过滤
         Sensitive = Sservice()
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         title = Sensitive.filter(request.POST.get('title'))
         content = Sensitive.filter(request.POST.get('content'))
         # title = request.POST.get('title')
         # content = request.POST.get("content")
         userId = request.user.id
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         question = Question.objects.create(
             title=title, content=content, user_id=userId)
-        return True, "success"
+
+        import pdb; pdb.set_trace()
+        qId = question.id
+        # 问题发布成功设置其初始因素值
+        try:
+            rs = RankService()
+            rs.setInfluenceFactors(rankType['question'].encode(),qId,QuestionFactors)
+            rs.CalculateAndUpdate(rankType['question'].encode(),qId)
+            return True, "success"
+        except Exception as e:
+            print e
+            return False, e
     except Exception as e:
         return False, e
 
