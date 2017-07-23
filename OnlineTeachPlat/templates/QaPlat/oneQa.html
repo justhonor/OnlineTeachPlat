@@ -22,12 +22,21 @@
 		  			<div class="new_questions_user" align="right">
 		  				<h4  style="display:inline"><a href="/QaPlat/person/{{news.userId}}/">{{news.username}}</a></h4>
 		  				<h5 style="display:inline">创建于:{{news.date}}</h5>
+		  				<div class="glyphicon glyphicon-hand-right like oneLike"  align="right">
+		  					</div>
+		  					<span>{{news.Qscore}}</span>
+		  					<div class="glyphicon glyphicon-thumbs-down dislike oneDislike"  align="left">
+		  					</div>
 		  			</div>
 		  			<div align="left">
 			  			<a href="#buttonComment"><button class="btn btn-primary"> 评论</button></a>
 			  			<button class="btn btn-primary" id="followId" >关注</button>
 			  			<button class="btn btn-primary" id="unfollowId" >取消关注</button>
-			  			{{news.IsFollow}}
+			  			是否关注:{{news.IsFollow}}
+			  			<span>浏览:{{news.Qviews}}</span> 
+			  			<span>关注:{{news.Qfollowers}}</span>  
+			  			<span>回答:{{news.Qanswer}}</span> 
+			  			<span>回答分数:{{news.sumAscores}}</span>
 		  			</div>
 		  		</div>
 		  	<div class="page-header" align="left">

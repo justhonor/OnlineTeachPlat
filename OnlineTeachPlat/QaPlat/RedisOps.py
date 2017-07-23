@@ -144,8 +144,7 @@ class RedisHash(object):
 
     def hincrby(self,key,field,count):
         try:
-            self.r.hincrby(key,field,count)
-            return True
+            return self.r.hincrby(key,field,count)
         except Exception as e:
             print e
             return False

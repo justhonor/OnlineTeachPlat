@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.test import TestCase
 
 # from LikeService import LikeService
-
 # from async.Event import EventType,EventModle,eventProducer,eventComsumer,workThread
 
 from Queue import Queue
@@ -19,7 +18,8 @@ import redis
 host = 'localhost'
 port = 6379
 db = 0
-
+s = 'sdf'
+print type(s)
 # pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
 # rds=redis.Redis(connection_pool=pool)
 factors1 = {
@@ -58,7 +58,8 @@ factors4 = {
 
 rankType = "TRank"
 rs = RankService()
-
+print rs.IncrbyFactor(rankType,"qId10","Qviews")
+print rs.getRankResult(rankType)
 # 
 # rs.setRankScore(rankType,11,"qId11")
 # rs.setRankScore(rankType,12,"qId12")
@@ -102,17 +103,17 @@ rs = RankService()
 # print rs.getRankResult(rankType)
 # print "++++++++++++++++++++++++++++++++++++++++"
 
-factors5 = {
-     "Qviews":'1',
-     "Qanswer":"0",
-     "Qscore":'1',
-     "sumAscores":'0',
-     "QageInHours":'1',
-     "Qupdated":'0',
-}
+# factors5 = {
+#      "Qviews":'1',
+#      "Qanswer":"0",
+#      "Qscore":'1',
+#      "sumAscores":'0',
+#      "QageInHours":'1',
+#      "Qupdated":'0',
+# }
 
-print factors5
-
+# print factors5
+# print factors5
 
 # rs.setInfluenceFactors(rankType,"qId1",factors5)
 # print rs.CalculatQuestionScores(rankType,"qId1")
@@ -169,12 +170,8 @@ print factors5
 #     p.fireEvnet(a)
 #     time.sleep(5)
 
-
-
 # c = eventComsumer()
 # c.get()
-
 # print m.getKey("TYPE")
 # print m.getKey("actorId")
 # print m.getKey("entityOwnerId")
-

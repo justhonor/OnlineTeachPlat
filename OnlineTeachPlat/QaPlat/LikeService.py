@@ -39,9 +39,9 @@ class LikeService(object):
 
     	# 喜欢1 不喜欢-1 无所谓0
     	if redis.sismember(likeKey,userId):
-    		return 1
+    		return "1"
     	elif redis.sismember(dislikekey,userId):
-    		return -1
+    		return "-1"
     	else:
     		return 0 
 

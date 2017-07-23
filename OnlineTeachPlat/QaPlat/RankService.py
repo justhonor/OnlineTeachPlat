@@ -66,6 +66,18 @@ class RankService(object):
 			print e
 			return False
 
+	def IncrbyFactor(self,rankType,rankId,field,count=1):
+		"""
+			增减因素值
+		"""
+		RankInflKey = self.getRankInfluencesKey(rankType,rankId)
+		RH = RedisHash()
+		try:
+			return RH.hincrby(RankInflKey,field,count)
+		except Exception as e:
+			print e
+			return False		
+
 	def getFactorsValue(self,rankType,rankId,factors):
 		"""
 			factors --> 列表
@@ -83,13 +95,14 @@ class RankService(object):
 		"""
 			计算问题rank值
 			影响因素:
-
+						
 						* Qviews:问题浏览数，通过log来平滑
 						* Qanswer:问题回答数，有回答的题目才是好问题
 						* Qscore:问题赞踩差，赞的越多，问题越好
 						* sum(Ascores):回答赞踩差，回答的越多问题越好
 						* QageInHours:题目发布到现在的时间差，时间越久排名越后
 						* Qupdated:最新的回答时间到现在的时间差，越新关注度越高。
+						* Qfollowers:问题关注数量,关注越多问题越好
 			
 			公式: score = L / R
 				正向因子 L:
@@ -100,7 +113,7 @@ class RankService(object):
 		# 判断影响因素名称是否正确
 		Getfactors = self.getInfluenceFactors(rankType,rankId)
 		factors = [
-			'Qviews','Qanswer','Qscore','sumAscores','QageInHours','Qupdated'
+			'Qviews','Qanswer','Qscore','sumAscores','QageInHours','Qupdated','Qfollowers'
 		]
 		for Gf in Getfactors:
 			if Gf not in factors:
@@ -118,8 +131,13 @@ class RankService(object):
 			print "GetFactorsValue error!"
 			return -300
 
+		print "%s Qviews:%s Qanswer:%s Qscore:%s sumAscores:%s  Qfollowers:%s"\
+		 %(rankId,values[0],values[1],values[2],values[3],values[6])
+		 
+		print "%s QageInHours:%s Qupdated:%s"%(rankId,values[4],values[5])
+
 		L = ( math.log( int(values[0]) ) * 4.0 ) + (( int(values[1]) * int(values[2]) )/5.0)\
-		 + int(values[3])
+		 + int(values[3])/2 + int(values[6])
 
 		R = ( int(values[4]) + 1.0 ) - math.pow( ( int(values[4]) - int(values[5]) ) / 2.0 , 1.1)
 		score = L / R 
@@ -151,6 +169,32 @@ class RankService(object):
 
 		return -1
 
+	def CalculateUpdateAll(self,rankType):
+		"""
+			更新每个实体的Rank值
+		"""
+		if rankType == "QuestionRank" or rankType == "TRank":
+			# 拿到每个RankId
+			QRankIds = self.getRankResult(rankType)
+			try:
+				for rankId in QRankIds:
+					try:
+						# 计算
+						score = self.CalculatQuestionScores(rankType,rankId)
+						print "UpdateAll %s score:%s"%(rankId,score)
+					except Exception as e:
+						print e			
+					
+					try:
+						# 更新Scores
+						self.setRankScore(rankType,rankId,score)
+					except Exception as e:
+						print e
+			except Exception as e:
+				print e 
+				return False
+
+		return True
 
 
 		

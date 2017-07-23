@@ -136,9 +136,15 @@ $(".dislike").click(function(e){
 	console.log(e)
 	// $(this).addClass("selected")
 	like = "-1"
-	entity_id = $(this).nextAll()[0].value
-	entity_type = $(this).nextAll()[1].value
+	if($(this).hasClass("oneDislike")){
+		entity_id = document.getElementById("qId_input").value
+		entity_type = document.getElementById("qType_input").value
 
+	}else{
+		entity_id = $(this).nextAll()[0].value
+		entity_type = $(this).nextAll()[1].value
+	}
+	
 	data = {
 		like : like,
 		entity_type : entity_type,
@@ -159,8 +165,15 @@ $(".like").click(function(e){
 	console.log(e)
 	// $(this).addClass("selected")
 	like = "1"
-	entity_id = $(this).nextAll()[2].value
-	entity_type = $(this).nextAll()[3].value
+	if($(this).hasClass("oneLike")){
+		entity_id = document.getElementById("qId_input").value
+		entity_type = document.getElementById("qType_input").value
+
+	}else{
+		entity_id = $(this).nextAll()[2].value
+		entity_type = $(this).nextAll()[3].value
+	}
+
 
 	data = {
 		like : like,

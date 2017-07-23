@@ -35,6 +35,17 @@ rankType ={
     "question":"QuestionRank"
 }
 
+    # 初始值
+QuestionFactors = {
+         "Qviews":'1',
+         "Qanswer":"0",
+         "Qscore":'0',
+         "sumAscores":'0',
+         "QageInHours":'1',
+         "Qupdated":'0',
+         "Qfollowers":'1'
+}
+
 
 
 # 使用原生SQL
@@ -161,6 +172,13 @@ def unfollowS(request):
     else:
         fs = Fs()
         fs.unfollow(entity_type,entity_id,userId)
+
+        # 如果取消关注的是问题,则给该问题因素Qfollowers减1
+        if entity_type == "1":
+            # print "关注的是问题"
+            field="Qfollowers"
+            rs = RankService()
+            Qfollowers=rs.IncrbyFactor(rankType["question"].encode(),str(entity_id),field,-1)
         return HttpResponse(content="d1")   
 # followerKey:FOLLOWER_110 enType:1 enId:10 uId:57 uType:3
 # followeeKey:FOLLOWEE_573 enType:1 enId:10 uId:57 uType:3
@@ -177,6 +195,14 @@ def followS(request):
     else:
         fs = Fs()
         fs.follow(entity_type,entity_id,userId)
+        # 如果关注的问题,则给该问题因素Qfollowers增1
+        # import pdb; pdb.set_trace()
+        if entity_type == "1":
+            # print "关注的是问题"
+            field="Qfollowers"
+            rs = RankService()
+            Qfollowers=rs.IncrbyFactor(rankType["question"].encode(),str(entity_id),field)
+
         return HttpResponse(content="d1")   
 
 # 赞踩服务
@@ -196,18 +222,85 @@ def likeService(request):
     elif entity_type == "2":
         entityOwnerId = Comment.objects.get(id=entity_id).user_id
 
-    # import pdb; pdb.set_trace()
+    
     l = LikeService()
+    
+    # 操作状态与当前状态一样,直接返回
+    if l.getLikeStatus(userId,entity_type,entity_id) == like:
+        counts = l.getLikecount(entity_type,entity_id)   
+        print "counts:",counts
+        return HttpResponse(content=counts)
+    
     if like == "1":
         l.like(userId,entity_type,entity_id)
+
+        # 如果点赞的是问题,则给该问题因素Qscore增1
+        if entity_type == "1":
+            # print "关注的是问题"
+            counts = l.getLikecount(entity_type,entity_id)
+            field={
+                "Qscore":counts,
+            }
+            rs = RankService()
+            rs.setInfluenceFactors(rankType["question"].encode(),str(entity_id),field)
+        # 如果点赞的是评论,
+        elif entity_type == "2":
+            # 找到评论最初属主ID及type
+            
+            ParentEntityId = entity_id
+            ParentEntityType = entity_type
+            while ParentEntityType == "2":
+                EntityId=Comment.objects.get(id=int(ParentEntityId)).entity_id
+                EntityType=Comment.objects.get(id=int(ParentEntityId)).entity_type
+
+                ParentEntityId = EntityId
+                ParentEntityType = EntityType
+
+            # 如果最初属主是问题,则给该评论属主问题的sumAscores增1
+            if ParentEntityType == "1":
+                field="sumAscores"
+                rs = RankService()
+                print "field"
+                sumAscores=rs.IncrbyFactor(rankType["question"].encode(),str(ParentEntityId),field)
+
         # 触发异步事件
         em =  EventModle()
         em.setKey("TYPE","like").setKey("actorId",userId).setKey("entityType",entity_type)\
         .setKey("entityId",entity_id).setKey("entityOwnerId",entityOwnerId)
         producer = eventProducer()
         producer.fireEvnet(em)
+
     elif like == "-1":
         l.disLike(userId,entity_type,entity_id)
+
+        # 如果点踩的是问题,则给该问题因素Qscore减1
+        if entity_type == "1":
+            # print "关注的是问题"
+            field="Qscore"
+            rs = RankService()
+            Qscore=rs.IncrbyFactor(rankType["question"].encode(),str(entity_id),field,-1)
+        # 如果点踩的是评论,
+        elif entity_type == "2":
+            # 找到评论最初属主ID及type
+            
+            ParentEntityId = entity_id
+            ParentEntityType = entity_type
+            while ParentEntityType == "2":
+                EntityId=Comment.objects.get(id=int(ParentEntityId)).entity_id
+                EntityType=Comment.objects.get(id=int(ParentEntityId)).entity_type
+
+                ParentEntityId = EntityId
+                ParentEntityType = EntityType
+
+
+            # 如果最初属主是问题,则给该评论属主问题的sumAscores增1
+            if ParentEntityType == "1":
+                field="sumAscores"
+                rs = RankService()
+                print "field"
+                # import pdb; pdb.set_trace()
+                sumAscores=rs.IncrbyFactor(rankType["question"].encode(),str(ParentEntityId),field,-1)
+
     counts = l.getLikecount(entity_type,entity_id)
 
     return HttpResponse(content=counts)
@@ -306,15 +399,6 @@ def publicQ(request):
 def publicS(request):
     # import pdb; pdb.set_trace()
 
-    # 初始值
-    QuestionFactors = {
-         "Qviews":'1',
-         "Qanswer":"0",
-         "Qscore":'1',
-         "sumAscores":'0',
-         "QageInHours":'1',
-         "Qupdated":'0',
-    }
     try:
         # 敏感词过滤
         Sensitive = Sservice()
@@ -328,17 +412,19 @@ def publicS(request):
         question = Question.objects.create(
             title=title, content=content, user_id=userId)
 
-        import pdb; pdb.set_trace()
         qId = question.id
+        # import pdb; pdb.set_trace()
+
         # 问题发布成功设置其初始因素值
         try:
             rs = RankService()
-            rs.setInfluenceFactors(rankType['question'].encode(),qId,QuestionFactors)
-            rs.CalculateAndUpdate(rankType['question'].encode(),qId)
+            rs.setInfluenceFactors(rankType['question'].encode(),str(qId),QuestionFactors)
+            rs.CalculateAndUpdate(rankType['question'].encode(),str(qId))
             return True, "success"
         except Exception as e:
             print e
             return False, e
+
     except Exception as e:
         return False, e
 
@@ -383,8 +469,21 @@ def qaPlat(request):
     # 喜欢该问题的人数
     l = LikeService()
 
-    # 显示最新问题
-    questions = Question.objects.order_by('id').reverse()
+    """
+         显示最新问题N个问题
+         从QuestionRank 中拿到问题id
+    """
+    rs = RankService()
+    if rs.CalculateUpdateAll(rankType["question"].encode()):
+        print "更新所有QRank 成功"
+
+    QRankIds=rs.getRankResult(rankType["question"].encode(),offset=0,count=-1)
+
+    questions = []
+    for QRankId in QRankIds:
+        questions.append(Question.objects.get(id=QRankId))
+
+    # questions = Question.objects.order_by('id').reverse()
     news = []
     for qa in questions:
         if qa.title == "" or qa.user_id == "":
@@ -408,7 +507,6 @@ def qaPlat(request):
 @csrf_exempt
 def oneQuestion(request):
 
-
     # 显示该问题
     # import pdb; pdb.set_trace()
     if request.method == "POST":
@@ -416,7 +514,16 @@ def oneQuestion(request):
     # 用于我关注的问题
     elif request.method == "GET":
         qId = request.path.encode().split('/')[-2]
-        
+    
+    # 增加浏览次数
+    field="Qviews"
+    rs = RankService()
+    Qv=rs.IncrbyFactor(rankType["question"].encode(),str(qId),field)
+    
+    factor = ["Qanswer","Qscore","sumAscores","Qfollowers","Qviews"]
+    factors = rs.getFactorsValue(rankType["question"].encode(),str(qId),factor)
+
+
     qa = Question.objects.get(id=qId)
     # import pdb; pdb.set_trace()
     username = User.objects.get(id=qa.user_id).username
@@ -429,6 +536,14 @@ def oneQuestion(request):
     newQuestion.setKey("type","1")
     newQuestion.setKey("id", qa.id)
 
+    # 问题影响因素值
+    newQuestion.setKey("Qanswer",factors[0])
+    newQuestion.setKey("Qscore",factors[1])
+    newQuestion.setKey("sumAscores",factors[2])
+    newQuestion.setKey("Qfollowers",factors[3])
+    newQuestion.setKey("Qviews",factors[4])
+
+    # import pdb; pdb.set_trace()
     # 是否已关注
     fs = Fs()
     # import pdb; pdb.set_trace()
@@ -473,6 +588,22 @@ def commentSubmit(request):
     com.entity_type = entity_type
     com.entity_id = entity_id   
     com.save()
+
+    # 找到评论最初属主ID及type
+    # 最初属主的type 可以为"2" 及评论的最初属主不可为评论
+    ParentEntityId = entity_id
+    ParentEntityType = entity_type
+    while ParentEntityType == "2":
+        ParentEntityId=Comment.objects.get(id=ParentEntityId).entity_id
+        ParentEntityType=Comment.objects.get(id=ParentEntityId).entity_type
+
+    # 如果最初属主是问题,则给该评论属主问题的sumAscores加1
+    if ParentEntityType == "1":
+        field="Qanswer"
+        rs = RankService()
+        Qanswer=rs.IncrbyFactor(rankType["question"].encode(),str(ParentEntityId),field)
+
+
     return HttpResponse(content="yes")
 
 
